@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/barang_provider.dart'; // Pastikan path ini sesuai
+import 'providers/barang_provider.dart';
 
 class DataBarangLamaPage extends StatefulWidget {
   @override
@@ -12,7 +12,47 @@ class _DataBarangLamaPageState extends State<DataBarangLamaPage> {
   int totalJumlah = 0;
 
   final Color neonGreen = const Color(0xFF39FF14);
-  final Color darkBackground = Colors.black;
+  final Color neonPink = const Color(0xFFFF10F0);
+  final Color neonBlue = const Color(0xFF00E5FF);
+
+  String currentTheme = 'neon';
+  late Color primaryColor;
+  late Color backgroundColor;
+  late Color textColor;
+  late Color cardColor;
+  late Color borderColor;
+
+  void _setTheme(String theme) {
+    setState(() {
+      currentTheme = theme;
+      if (theme == 'neon') {
+        primaryColor = neonGreen;
+        backgroundColor = Colors.black;
+        textColor = Colors.white;
+        cardColor = Colors.black.withOpacity(0.8);
+        borderColor = neonGreen;
+      } else if (theme == 'dark') {
+        primaryColor = Colors.blueGrey;
+        backgroundColor = Colors.grey[900]!;
+        textColor = Colors.white;
+        cardColor = Colors.grey[800]!;
+        borderColor = Colors.white70;
+      } else {
+        primaryColor = Colors.blue;
+        backgroundColor = Colors.white;
+        textColor = Colors.black;
+        cardColor = Colors.grey[100]!;
+        borderColor = Colors.black54;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _addRow();
+    _setTheme('neon');
+  }
 
   void _addRow() {
     setState(() {
@@ -31,7 +71,7 @@ class _DataBarangLamaPageState extends State<DataBarangLamaPage> {
       setState(() {
         barangControllers.removeLast();
       });
-      _calculateTotalJumlah(); // Update totalJumlah setelah menghapus baris
+      _calculateTotalJumlah();
     } else {
       ScaffoldMessenger.of(
         context,
@@ -87,41 +127,9 @@ class _DataBarangLamaPageState extends State<DataBarangLamaPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _addRow(); // Tambahkan satu baris awal saat pertama kali dibuka
-  }
-
-  @override
-  void dispose() {
-    for (var row in barangControllers) {
-      row.forEach((_, controller) => controller.dispose());
-    }
-    super.dispose();
-  }
-
-  Widget _buildTable() {
-    return Table(
-      border: TableBorder.all(color: neonGreen),
-      columnWidths: const {
-        0: FlexColumnWidth(1),
-        1: FlexColumnWidth(3),
-        2: FlexColumnWidth(2),
-        3: FlexColumnWidth(2),
-        4: FlexColumnWidth(3),
-      },
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      children: [
-        _buildTableHeader(),
-        ...barangControllers.map((row) => _buildTableRow(row)).toList(),
-      ],
-    );
-  }
-
   TableRow _buildTableHeader() {
     return TableRow(
-      decoration: BoxDecoration(color: darkBackground),
+      decoration: BoxDecoration(color: backgroundColor),
       children: [
         _buildHeaderCell('No.'),
         _buildHeaderCell('Nama Barang'),
@@ -150,7 +158,7 @@ class _DataBarangLamaPageState extends State<DataBarangLamaPage> {
       child: Center(
         child: Text(
           label,
-          style: TextStyle(fontWeight: FontWeight.bold, color: neonGreen),
+          style: TextStyle(fontWeight: FontWeight.bold, color: primaryColor),
         ),
       ),
     );
@@ -161,15 +169,13 @@ class _DataBarangLamaPageState extends State<DataBarangLamaPage> {
       padding: const EdgeInsets.all(4.0),
       child: TextField(
         controller: controller,
-        style: TextStyle(color: neonGreen),
-        cursorColor: neonGreen,
+        style: TextStyle(color: textColor),
+        cursorColor: primaryColor,
         decoration: InputDecoration(
-          isDense: true,
-          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-          hintStyle: TextStyle(color: neonGreen.withOpacity(0.5)),
+          filled: true,
+          fillColor: cardColor,
           border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         ),
       ),
     );
@@ -185,21 +191,59 @@ class _DataBarangLamaPageState extends State<DataBarangLamaPage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            color: neonGreen,
+            color: primaryColor,
           ),
         ),
       ),
     );
   }
 
+  Widget _buildTable() {
+    return Table(
+      border: TableBorder.all(color: borderColor),
+      columnWidths: const {
+        0: FlexColumnWidth(1),
+        1: FlexColumnWidth(3),
+        2: FlexColumnWidth(2),
+        3: FlexColumnWidth(2),
+        4: FlexColumnWidth(3),
+      },
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      children: [
+        _buildTableHeader(),
+        ...barangControllers.map((row) => _buildTableRow(row)).toList(),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    for (var row in barangControllers) {
+      row.forEach((_, controller) => controller.dispose());
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: darkBackground,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text('Data Barang Lama'),
-        backgroundColor: Colors.black,
-        foregroundColor: neonGreen,
+        backgroundColor: backgroundColor,
+        title: Text('Data Barang Lama', style: TextStyle(color: primaryColor)),
+        iconTheme: IconThemeData(color: primaryColor),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.palette, color: primaryColor),
+            onSelected: _setTheme,
+            itemBuilder:
+                (BuildContext context) => [
+                  PopupMenuItem(value: 'neon', child: Text('Neon Theme')),
+                  PopupMenuItem(value: 'dark', child: Text('Dark Theme')),
+                  PopupMenuItem(value: 'light', child: Text('Light Theme')),
+                ],
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -216,24 +260,26 @@ class _DataBarangLamaPageState extends State<DataBarangLamaPage> {
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: neonGreen,
-                  foregroundColor: Colors.black,
+                  backgroundColor: backgroundColor,
+                  foregroundColor: primaryColor,
+                  side: BorderSide(color: primaryColor),
                 ),
                 onPressed: _addRow,
                 child: Text('Tambah'),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: neonGreen,
-                  foregroundColor: Colors.black,
+                  backgroundColor: backgroundColor,
+                  foregroundColor: primaryColor,
+                  side: BorderSide(color: primaryColor),
                 ),
                 onPressed: _removeRow,
                 child: Text('Hapus'),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: neonGreen,
-                  foregroundColor: Colors.black,
+                  backgroundColor: primaryColor,
+                  foregroundColor: backgroundColor,
                 ),
                 onPressed: _saveData,
                 child: Text('Simpan'),
