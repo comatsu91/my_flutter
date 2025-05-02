@@ -51,8 +51,8 @@ class DashboardPage extends StatelessWidget {
                         builder:
                             (_) => ProfilePage(
                               nama: 'Izuddin Arga Eko Sartono',
-                              pekerjaan: 'Karyawan Swasta',
-                              alamat: 'Sragen',
+                              jabatan: 'Tenaga Pendidik',
+                              jurusan: 'Teknik Jaringan Komputer dan Telekomunikasi ',
                               email: 'izuddinarga33@gmail.com',
                               username: username,
                               password: password,

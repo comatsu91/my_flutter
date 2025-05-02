@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
   final String nama;
-  final String pekerjaan;
-  final String alamat;
+  final String jabatan;
+  final String jurusan;
   final String email;
   final String username;
   final String password;
 
   ProfilePage({
     required this.nama,
-    required this.pekerjaan,
-    required this.alamat,
+    required this.jabatan,
+    required this.jurusan,
     required this.email,
     required this.username,
     required this.password,
@@ -138,8 +138,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 20),
                   _buildProfileItem('Nama', widget.nama),
-                  _buildProfileItem('Pekerjaan', widget.pekerjaan),
-                  _buildProfileItem('Alamat', widget.alamat),
+                  _buildProfileItem('Jabatan', widget.jabatan),
+                  _buildProfileItem('Jurusan', widget.jurusan),
                   _buildProfileItem('Email', widget.email),
                   Divider(color: primaryColor.withOpacity(0.5), height: 30),
                   _buildProfileItemSmall('Username', widget.username),
