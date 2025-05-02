@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Halaman profil dengan tema yang dapat diubah (neon, dark, light)
 class ProfilePage extends StatefulWidget {
   final String nama;
   final String jabatan;
@@ -28,12 +29,13 @@ class _ProfilePageState extends State<ProfilePage> {
   final Color neonBlue = const Color(0xFF00E5FF);
 
   // Variabel untuk tema saat ini
-  String currentTheme = 'neon'; // 'neon', 'dark', atau 'light'
-  Color primaryColor = const Color(0xFF39FF14);
-  Color backgroundColor = Colors.black;
-  Color textColor = Colors.white;
-  Color cardColor = Colors.black.withOpacity(0.8);
+  String currentTheme = 'neon'; // Bisa: 'neon', 'dark', atau 'light'
+  Color primaryColor = const Color(0xFF39FF14); // Warna utama (default neon green)
+  Color backgroundColor = Colors.black; // Warna latar belakang
+  Color textColor = Colors.white; // Warna teks
+  Color cardColor = Colors.black.withOpacity(0.8); // Warna kartu profil
 
+  // Fungsi untuk mengganti tema
   void changeTheme(String theme) {
     setState(() {
       currentTheme = theme;
@@ -60,9 +62,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
+        width: double.infinity, // Lebar penuh layar
+        height: double.infinity, // Tinggi penuh layar
         decoration: BoxDecoration(
+          // Latar belakang gradien sesuai tema
           gradient: LinearGradient(
             colors: [backgroundColor, primaryColor],
             begin: Alignment.topCenter,
@@ -70,14 +73,16 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         child: SafeArea(
+          // Menghindari notch atau area sistem
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(20.0),
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: cardColor,
+                color: cardColor, // Warna kartu sesuai tema
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
+                  // Efek bayangan untuk kartu profil
                   BoxShadow(
                     color: primaryColor.withOpacity(0.3),
                     blurRadius: 15,
@@ -89,6 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header judul dan ikon pemilih tema
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -100,20 +106,21 @@ class _ProfilePageState extends State<ProfilePage> {
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
                               color: primaryColor,
-                              shadows:
-                                  currentTheme == 'neon'
-                                      ? [
-                                        Shadow(
-                                          blurRadius: 10,
-                                          color: primaryColor,
-                                          offset: Offset(0, 0),
-                                        ),
-                                      ]
-                                      : null,
+                              shadows: currentTheme == 'neon'
+                                  ? [
+                                      // Efek cahaya untuk tema neon
+                                      Shadow(
+                                        blurRadius: 10,
+                                        color: primaryColor,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ]
+                                  : null,
                             ),
                           ),
                         ),
                       ),
+                      // Menu untuk memilih tema
                       PopupMenuButton<String>(
                         icon: Icon(Icons.palette, color: primaryColor),
                         onSelected: changeTheme,
@@ -137,11 +144,17 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                   SizedBox(height: 20),
+
+                  // Menampilkan data utama profil
                   _buildProfileItem('Nama', widget.nama),
                   _buildProfileItem('Jabatan', widget.jabatan),
                   _buildProfileItem('Jurusan', widget.jurusan),
                   _buildProfileItem('Email', widget.email),
+
+                  // Pemisah antara data utama dan data akun
                   Divider(color: primaryColor.withOpacity(0.5), height: 30),
+
+                  // Menampilkan data tambahan
                   _buildProfileItemSmall('Username', widget.username),
                   _buildProfileItemSmall('Password', widget.password),
                 ],
@@ -150,21 +163,23 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
+      // AppBar bagian atas
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: backgroundColor, // Latar appbar sesuai tema
         title: Text('Profile', style: TextStyle(color: primaryColor)),
         iconTheme: IconThemeData(color: primaryColor),
       ),
     );
   }
 
+  // Widget untuk menampilkan item profil utama (huruf besar)
   Widget _buildProfileItem(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         children: [
           Container(
-            width: 120,
+            width: 120, // Label kiri
             child: Text(
               label,
               style: TextStyle(
@@ -185,13 +200,14 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  // Widget untuk menampilkan item profil kecil (username & password)
   Widget _buildProfileItemSmall(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
           Container(
-            width: 120,
+            width: 120, // Label kiri
             child: Text(
               label,
               style: TextStyle(
@@ -204,7 +220,10 @@ class _ProfilePageState extends State<ProfilePage> {
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 14, color: textColor.withOpacity(0.8)),
+              style: TextStyle(
+                fontSize: 14,
+                color: textColor.withOpacity(0.8),
+              ),
             ),
           ),
         ],

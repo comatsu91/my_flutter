@@ -7,10 +7,12 @@ import 'login_page.dart'; // Halaman Login
 import 'providers/barang_provider.dart'; // Provider untuk total barang
 
 void main() {
+  // Menjalankan aplikasi Flutter dengan provider BarangProvider
   runApp(
     ChangeNotifierProvider(
+      // Inisialisasi BarangProvider sebagai state management
       create: (context) => BarangProvider(),
-      child: MyApp(),
+      child: MyApp(), // Widget root aplikasi
     ),
   );
 }
@@ -20,9 +22,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Aplikasi Login',
-      theme: ThemeData(primarySwatch: Colors.green),
-      home: LoginPage(), // Tetap arahkan ke halaman login
+      title: 'Aplikasi Login', // Judul aplikasi
+      theme: ThemeData(primarySwatch: Colors.green), // Tema utama aplikasi
+      home: LoginPage(), // Halaman pertama yang ditampilkan adalah LoginPage
     );
   }
 }
