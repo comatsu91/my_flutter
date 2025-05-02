@@ -92,40 +92,48 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
     });
   }
 
-  void _saveData() {
-    bool isValid = true;
-    String message = '';
-    for (int i = 0; i < barangControllers.length; i++) {
-      var row = barangControllers[i];
-      for (var entry in row.entries) {
-        if (entry.value.text.isEmpty) {
-          isValid = false;
-          message = 'Semua kolom harus diisi (Baris ${i + 1})';
-          break;
-        }
-      }
-      if (isValid && int.tryParse(row['jumlah']!.text) == null) {
+void _saveData() {
+  bool isValid = true;
+  String message = '';
+  for (int i = 0; i < barangControllers.length; i++) {
+    var row = barangControllers[i];
+    for (var entry in row.entries) {
+      if (entry.value.text.isEmpty) {
         isValid = false;
-        message = 'Jumlah harus berupa angka (Baris ${i + 1})';
+        message = 'Semua kolom harus diisi (Baris ${i + 1})';
         break;
       }
     }
-
-    if (isValid) {
-      _calculateTotalJumlah();
-      Provider.of<BarangProvider>(
-        context,
-        listen: false,
-      ).updateBarangBaru(totalJumlah);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Data berhasil disimpan!')));
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+    if (isValid && int.tryParse(row['jumlah']!.text) == null) {
+      isValid = false;
+      message = 'Jumlah harus berupa angka (Baris ${i + 1})';
+      break;
     }
   }
+
+  if (isValid) {
+    _calculateTotalJumlah();
+    List<Map<String, String>> data = barangControllers.map((controller) => {
+      'no': controller['no']!.text,
+      'nama': controller['nama']!.text,
+      'jumlah': controller['jumlah']!.text,
+      'kondisi': controller['kondisi']!.text,
+      'keterangan': controller['keterangan']!.text,
+    }).toList();
+
+    Provider.of<BarangProvider>(context, listen: false)
+        .updateBarangBaru(totalJumlah, data);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Data berhasil disimpan!')),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+}
+
 
   TableRow _buildTableHeader() {
     return TableRow(

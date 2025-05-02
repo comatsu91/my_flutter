@@ -7,7 +7,6 @@ class TotalBarangPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final barangProvider = Provider.of<BarangProvider>(context);
 
-    // Define our color scheme
     const neonGreen = Color(0xFF39FF14);
     const neonBlue = Color(0xFF00E5FF);
     const darkBackground = Color(0xFF121212);
@@ -32,7 +31,6 @@ class TotalBarangPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Barang Baru Card
             _buildStatCard(
               context,
               title: 'Barang Baru',
@@ -40,10 +38,7 @@ class TotalBarangPage extends StatelessWidget {
               color: neonGreen,
               icon: Icons.new_releases_outlined,
             ),
-
             const SizedBox(height: 20),
-
-            // Barang Lama Card
             _buildStatCard(
               context,
               title: 'Barang Lama',
@@ -51,10 +46,7 @@ class TotalBarangPage extends StatelessWidget {
               color: neonBlue,
               icon: Icons.history_outlined,
             ),
-
             const SizedBox(height: 30),
-
-            // Total Semua Barang
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -97,16 +89,34 @@ class TotalBarangPage extends StatelessWidget {
                 ],
               ),
             ),
-
-            const SizedBox(height: 20),
-
-            // Additional decorative element
-            Container(
-              height: 4,
-              width: 100,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [neonGreen, neonBlue]),
-                borderRadius: BorderRadius.circular(2),
+            const SizedBox(height: 30),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(
+                      'TABEL BARANG BARU',
+                      style: TextStyle(
+                        color: neonGreen,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildDataTable(barangProvider.dataBarangBaru, neonGreen),
+                    const SizedBox(height: 30),
+                    Text(
+                      'TABEL BARANG LAMA',
+                      style: TextStyle(
+                        color: neonBlue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildDataTable(barangProvider.dataBarangLama, neonBlue),
+                  ],
+                ),
               ),
             ),
           ],
@@ -174,6 +184,49 @@ class TotalBarangPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDataTable(List<Map<String, String>> dataList, Color textColor) {
+    return Table(
+      border: TableBorder.all(color: textColor),
+      columnWidths: const {
+        0: FlexColumnWidth(1),
+        1: FlexColumnWidth(3),
+        2: FlexColumnWidth(2),
+        3: FlexColumnWidth(2),
+        4: FlexColumnWidth(3),
+      },
+      children: [
+        TableRow(
+          decoration: BoxDecoration(color: Colors.black45),
+          children: [
+            _buildCell('No.', textColor),
+            _buildCell('Nama Barang', textColor),
+            _buildCell('Jumlah', textColor),
+            _buildCell('Kondisi', textColor),
+            _buildCell('Keterangan', textColor),
+          ],
+        ),
+        ...dataList.map(
+          (item) => TableRow(
+            children: [
+              _buildCell(item['no'] ?? '', textColor),
+              _buildCell(item['nama'] ?? '', textColor),
+              _buildCell(item['jumlah'] ?? '', textColor),
+              _buildCell(item['kondisi'] ?? '', textColor),
+              _buildCell(item['keterangan'] ?? '', textColor),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCell(String text, Color color) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(text, style: TextStyle(color: color, fontSize: 14)),
     );
   }
 }
