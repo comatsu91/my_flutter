@@ -71,12 +71,12 @@ class TotalBarangPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
                   Text(
                     '${barangProvider.totalSemuaBarang}',
                     style: TextStyle(
                       color: neonGreen,
-                      fontSize: 42,
+                      fontSize: 35,
                       fontWeight: FontWeight.bold,
                       shadows: [
                         Shadow(
