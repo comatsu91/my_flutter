@@ -1,69 +1,83 @@
 import 'package:flutter/material.dart';
-import 'dashboard_page.dart';
 import 'register_page.dart';
+import 'dashboard_page.dart';
+import 'models/user_data.dart';
 
-// Halaman Login menggunakan StatefulWidget
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
   @override
   LoginPageState createState() => LoginPageState();
 }
 
 class LoginPageState extends State<LoginPage> {
-  // Controller untuk input username dan password
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  // Variabel untuk mengontrol visibilitas password (default: tersembunyi)
   bool _isPasswordVisible = false;
 
-  // Variabel untuk menyimpan username dan password yang didaftarkan
-  String? registeredUsername;
-  String? registeredPassword;
+  // Menyimpan data pengguna yang terdaftar
+  UserData? registeredUser;
 
-  // Fungsi untuk melakukan proses login
+  // Callback saat selesai registrasi
+  void _onRegister(
+    String username,
+    String password,
+    String nama,
+    String email,
+    String jabatan,
+    String jurusan,
+  ) {
+    setState(() {
+      registeredUser = UserData(
+        nama: nama,
+        jabatan: jabatan,
+        jurusan: jurusan,
+        email: email,
+        username: username,
+        password: password,
+      );
+    });
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Akun berhasil dibuat!')));
+  }
+
+  // Fungsi login
   void _login() {
     String username = _usernameController.text;
     String password = _passwordController.text;
 
-    // Login berhasil jika cocok dengan admin default atau akun yang didaftarkan
-    if ((username == 'admin' && password == '1234') ||
-        (username == registeredUsername && password == registeredPassword)) {
+    if (registeredUser != null &&
+        username == registeredUser!.username &&
+        password == registeredUser!.password) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder:
-              (context) =>
-                  DashboardPage(username: username, password: password),
+              (context) => DashboardPage(
+                username: registeredUser!.username,
+                password: registeredUser!.password,
+                nama: registeredUser!.nama,
+                jabatan: registeredUser!.jabatan,
+                jurusan: registeredUser!.jurusan,
+                email: registeredUser!.email,
+              ),
         ),
       );
     } else {
-      // Tampilkan pesan error jika login gagal
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Username atau Password salah!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Username atau Password salah!')),
+      );
     }
   }
 
-  // Fungsi untuk navigasi ke halaman registrasi
+  // Navigasi ke halaman registrasi
   void _register() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => RegisterPage(
-              // Callback untuk menyimpan username dan password setelah registrasi
-              onRegister: (username, password) {
-                setState(() {
-                  registeredUsername = username;
-                  registeredPassword = password;
-                });
-                // Tampilkan notifikasi bahwa akun berhasil dibuat
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Akun berhasil dibuat!')),
-                );
-              },
-            ),
+        builder: (context) => RegisterPage(onRegister: _onRegister),
       ),
     );
   }
@@ -72,8 +86,7 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // Latar belakang dengan gradasi dari hitam ke hijau neon
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.black, Color(0xFF39FF14)],
             begin: Alignment.topCenter,
@@ -84,7 +97,6 @@ class LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
             child: Card(
-              // Tampilan kartu transparan dengan efek gelap
               color: Colors.black.withAlpha(178),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -95,8 +107,7 @@ class LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Judul halaman login
-                    Text(
+                    const Text(
                       'Login Inventaris',
                       style: TextStyle(
                         fontSize: 24,
@@ -104,12 +115,11 @@ class LoginPageState extends State<LoginPage> {
                         color: Color(0xFF39FF14),
                       ),
                     ),
-                    SizedBox(height: 24),
-                    // Input untuk username
+                    const SizedBox(height: 24),
                     TextField(
                       controller: _usernameController,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
                         labelText: 'Username',
                         labelStyle: TextStyle(color: Color(0xFF39FF14)),
                         prefixIcon: Icon(
@@ -124,56 +134,54 @@ class LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
-                    // Input untuk password dengan toggle visibilitas
+                    const SizedBox(height: 16),
                     TextField(
                       controller: _passwordController,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: TextStyle(color: Color(0xFF39FF14)),
-                        prefixIcon: Icon(Icons.lock, color: Color(0xFF39FF14)),
-                        // Tombol untuk melihat/sembunyikan password
+                        labelStyle: const TextStyle(color: Color(0xFF39FF14)),
+                        prefixIcon: const Icon(
+                          Icons.lock,
+                          color: Color(0xFF39FF14),
+                        ),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
-                            color: Color(0xFF39FF14),
+                            color: const Color(0xFF39FF14),
                           ),
                           onPressed: () {
-                            // Toggle visibilitas password
                             setState(() {
                               _isPasswordVisible = !_isPasswordVisible;
                             });
                           },
                         ),
-                        enabledBorder: OutlineInputBorder(
+                        enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFF39FF14)),
                         ),
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFF39FF14)),
                         ),
                       ),
                       obscureText: !_isPasswordVisible,
                     ),
-                    SizedBox(height: 24),
-                    // Tombol login
+                    const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: _login,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF39FF14),
-                        minimumSize: Size(double.infinity, 50),
+                        backgroundColor: const Color(0xFF39FF14),
+                        minimumSize: const Size(double.infinity, 50),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Login',
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
-                    // Tombol navigasi ke halaman registrasi
                     TextButton(
                       onPressed: _register,
-                      child: Text(
+                      child: const Text(
                         'Buat Akun',
                         style: TextStyle(color: Color(0xFF39FF14)),
                       ),

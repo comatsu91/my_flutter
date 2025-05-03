@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Halaman profil dengan tema yang dapat diubah (neon, dark, light)
 class ProfilePage extends StatefulWidget {
   final String nama;
   final String jabatan;
@@ -38,6 +37,9 @@ class ProfilePageState extends State<ProfilePage> {
   Color textColor = Colors.white; // Warna teks
   Color cardColor = Colors.black.withAlpha(204); // Warna kartu profil
 
+  // Variabel untuk visibilitas password
+  bool isPasswordVisible = false;
+
   // Fungsi untuk mengganti tema
   void changeTheme(String theme) {
     setState(() {
@@ -65,10 +67,9 @@ class ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity, // Lebar penuh layar
-        height: double.infinity, // Tinggi penuh layar
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
-          // Latar belakang gradien sesuai tema
           gradient: LinearGradient(
             colors: [backgroundColor, primaryColor],
             begin: Alignment.topCenter,
@@ -76,16 +77,14 @@ class ProfilePageState extends State<ProfilePage> {
           ),
         ),
         child: SafeArea(
-          // Menghindari notch atau area sistem
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(20.0),
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: cardColor, // Warna kartu sesuai tema
+                color: cardColor,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
-                  // Efek bayangan untuk kartu profil
                   BoxShadow(
                     color: primaryColor.withAlpha(76),
                     blurRadius: 15,
@@ -112,7 +111,6 @@ class ProfilePageState extends State<ProfilePage> {
                               shadows:
                                   currentTheme == 'neon'
                                       ? [
-                                        // Efek cahaya untuk tema neon
                                         Shadow(
                                           blurRadius: 10,
                                           color: primaryColor,
@@ -124,7 +122,6 @@ class ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      // Menu untuk memilih tema
                       PopupMenuButton<String>(
                         icon: Icon(Icons.palette, color: primaryColor),
                         onSelected: changeTheme,
@@ -155,7 +152,6 @@ class ProfilePageState extends State<ProfilePage> {
                   _buildProfileItem('Jurusan', widget.jurusan),
                   _buildProfileItem('Email', widget.email),
 
-                  // Pemisah antara data utama dan data akun
                   Divider(color: primaryColor.withAlpha(127), height: 30),
 
                   // Menampilkan data tambahan
@@ -167,9 +163,8 @@ class ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      // AppBar bagian atas
       appBar: AppBar(
-        backgroundColor: backgroundColor, // Latar appbar sesuai tema
+        backgroundColor: backgroundColor,
         title: Text('Profile', style: TextStyle(color: primaryColor)),
         iconTheme: IconThemeData(color: primaryColor),
       ),
@@ -183,7 +178,7 @@ class ProfilePageState extends State<ProfilePage> {
       child: Row(
         children: [
           SizedBox(
-            width: 120, // Label kiri
+            width: 120,
             child: Text(
               label,
               style: TextStyle(
@@ -206,12 +201,14 @@ class ProfilePageState extends State<ProfilePage> {
 
   // Widget untuk menampilkan item profil kecil (username & password)
   Widget _buildProfileItemSmall(String label, String value) {
+    bool isPasswordField = label.toLowerCase() == 'password';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 120, // Label kiri
+            width: 120,
             child: Text(
               label,
               style: TextStyle(
@@ -222,9 +219,33 @@ class ProfilePageState extends State<ProfilePage> {
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: TextStyle(fontSize: 14, color: textColor.withAlpha(204)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    isPasswordField && !isPasswordVisible ? '••••••••' : value,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: textColor.withAlpha(204),
+                    ),
+                  ),
+                ),
+                if (isPasswordField)
+                  IconButton(
+                    icon: Icon(
+                      isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: primaryColor.withAlpha(180),
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isPasswordVisible = !isPasswordVisible;
+                      });
+                    },
+                  ),
+              ],
             ),
           ),
         ],

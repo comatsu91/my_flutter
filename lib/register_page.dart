@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
-  final Function(String username, String password) onRegister;
+  // Callback untuk mengirim data lengkap ke halaman lain (misalnya LoginPage)
+  final Function(String username, String password, String nama, String email, String jabatan, String jurusan) onRegister;
 
   const RegisterPage({required this.onRegister, super.key});
 
@@ -10,6 +11,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterPageState extends State<RegisterPage> {
+  // Controller untuk input pengguna
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _jabatanController = TextEditingController();
   final TextEditingController _jurusanController = TextEditingController();
@@ -17,27 +19,29 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final Color neonGreen = const Color(0xFF39FF14); // hijau neon terang
+  final Color neonGreen = const Color(0xFF39FF14); // Warna hijau neon
 
+  // Fungsi untuk memproses pendaftaran akun
   void _register() {
     String username = _usernameController.text;
     String password = _passwordController.text;
+    String nama = _nameController.text;
+    String email = _emailController.text;
+    String jabatan = _jabatanController.text;
+    String jurusan = _jurusanController.text;
 
-    if (_nameController.text.isNotEmpty &&
-        _jabatanController.text.isNotEmpty &&
-        _jurusanController.text.isNotEmpty &&
-        _emailController.text.isNotEmpty &&
-        username.isNotEmpty &&
-        password.isNotEmpty) {
-      widget.onRegister(username, password);
-      Navigator.pop(context);
+    if (nama.isNotEmpty && jabatan.isNotEmpty && jurusan.isNotEmpty && email.isNotEmpty && username.isNotEmpty && password.isNotEmpty) {
+      // Kirim data lengkap ke halaman lain
+      widget.onRegister(username, password, nama, email, jabatan, jurusan);
+      Navigator.pop(context); // Kembali ke halaman login
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Semua field harus diisi!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Semua field harus diisi!')),
+      );
     }
   }
 
+  // Widget untuk input teks dengan desain konsisten
   Widget buildTextField({
     required String label,
     required IconData icon,
@@ -70,6 +74,7 @@ class RegisterPageState extends State<RegisterPage> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
+        // Background gradasi dari hitam ke hijau neon
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.black, neonGreen],
@@ -79,8 +84,9 @@ class RegisterPageState extends State<RegisterPage> {
         ),
         child: Center(
           child: Container(
-            padding: EdgeInsets.all(24),
-            margin: EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.all(24),
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            // Kartu transparan dengan border radius
             decoration: BoxDecoration(
               color: Colors.black.withAlpha(178),
               borderRadius: BorderRadius.circular(20),
@@ -97,55 +103,62 @@ class RegisterPageState extends State<RegisterPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
+                  // Input nama lengkap
                   buildTextField(
                     label: 'Nama Lengkap',
                     icon: Icons.person,
                     controller: _nameController,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  // Input jabatan
                   buildTextField(
                     label: 'Jabatan',
                     icon: Icons.work,
                     controller: _jabatanController,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  // Input jurusan
                   buildTextField(
                     label: 'Jurusan',
                     icon: Icons.school,
                     controller: _jurusanController,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  // Input email
                   buildTextField(
                     label: 'Email',
                     icon: Icons.email,
                     controller: _emailController,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  // Input username
                   buildTextField(
                     label: 'Username',
                     icon: Icons.account_circle,
                     controller: _usernameController,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  // Input password
                   buildTextField(
                     label: 'Password',
                     icon: Icons.lock,
                     controller: _passwordController,
                     obscure: true,
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
+                  // Tombol daftar
                   ElevatedButton(
                     onPressed: _register,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: neonGreen,
                       foregroundColor: Colors.black,
-                      minimumSize: Size(double.infinity, 50),
+                      minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: Text('Daftar'),
+                    child: const Text('Daftar'),
                   ),
                 ],
               ),
