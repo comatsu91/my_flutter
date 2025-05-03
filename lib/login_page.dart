@@ -4,11 +4,12 @@ import 'register_page.dart';
 
 // Halaman Login menggunakan StatefulWidget
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   // Controller untuk input username dan password
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -31,8 +32,9 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              DashboardPage(username: username, password: password),
+          builder:
+              (context) =>
+                  DashboardPage(username: username, password: password),
         ),
       );
     } else {
@@ -48,19 +50,20 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RegisterPage(
-          // Callback untuk menyimpan username dan password setelah registrasi
-          onRegister: (username, password) {
-            setState(() {
-              registeredUsername = username;
-              registeredPassword = password;
-            });
-            // Tampilkan notifikasi bahwa akun berhasil dibuat
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Akun berhasil dibuat!')),
-            );
-          },
-        ),
+        builder:
+            (context) => RegisterPage(
+              // Callback untuk menyimpan username dan password setelah registrasi
+              onRegister: (username, password) {
+                setState(() {
+                  registeredUsername = username;
+                  registeredPassword = password;
+                });
+                // Tampilkan notifikasi bahwa akun berhasil dibuat
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Akun berhasil dibuat!')),
+                );
+              },
+            ),
       ),
     );
   }
@@ -82,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(24.0),
             child: Card(
               // Tampilan kartu transparan dengan efek gelap
-              color: Colors.black.withOpacity(0.7),
+              color: Colors.black.withAlpha(178),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),

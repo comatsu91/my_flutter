@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class RegisterPage extends StatefulWidget {
   final Function(String username, String password) onRegister;
 
-  RegisterPage({required this.onRegister});
+  const RegisterPage({required this.onRegister, super.key});
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _jabatanController = TextEditingController();
   final TextEditingController _jurusanController = TextEditingController();
@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: EdgeInsets.all(24),
             margin: EdgeInsets.symmetric(horizontal: 24),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.7),
+              color: Colors.black.withAlpha(178),
               borderRadius: BorderRadius.circular(20),
             ),
             child: SingleChildScrollView(

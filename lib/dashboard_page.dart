@@ -9,7 +9,11 @@ class DashboardPage extends StatelessWidget {
   final String username; // Menerima username dari halaman login
   final String password; // Menerima password dari halaman login
 
-  DashboardPage({required this.username, required this.password});
+  const DashboardPage({
+    required this.username,
+    required this.password,
+    super.key,
+  });
 
   final Color neonGreen = const Color(0xFF39FF14); // Warna hijau neon
   final Color darkBackground = Colors.black; // Warna latar hitam
@@ -50,19 +54,22 @@ class DashboardPage extends StatelessWidget {
                 context,
                 icon: Icons.person_outline,
                 title: 'Profile',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ProfilePage(
-                      nama: 'Izuddin Arga Eko Sartono',
-                      jabatan: 'Tenaga Pendidik',
-                      jurusan: 'Teknik Jaringan Komputer dan Telekomunikasi ',
-                      email: 'izuddinarga33@gmail.com',
-                      username: username,
-                      password: password,
+                onTap:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => ProfilePage(
+                              nama: 'Izuddin Arga Eko Sartono',
+                              jabatan: 'Tenaga Pendidik',
+                              jurusan:
+                                  'Teknik Jaringan Komputer dan Telekomunikasi ',
+                              email: 'izuddinarga33@gmail.com',
+                              username: username,
+                              password: password,
+                            ),
+                      ),
                     ),
-                  ),
-                ),
               ),
 
               // Menu menuju halaman Data Barang Baru
@@ -70,10 +77,11 @@ class DashboardPage extends StatelessWidget {
                 context,
                 icon: Icons.add_circle_outline,
                 title: 'Data Barang Baru',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => DataBarangBaruPage()),
-                ),
+                onTap:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => DataBarangBaruPage()),
+                    ),
               ),
 
               // Menu menuju halaman Data Barang Lama
@@ -81,10 +89,11 @@ class DashboardPage extends StatelessWidget {
                 context,
                 icon: Icons.archive_outlined,
                 title: 'Data Barang Lama',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => DataBarangLamaPage()),
-                ),
+                onTap:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => DataBarangLamaPage()),
+                    ),
               ),
 
               // Menu menuju halaman Total Barang
@@ -92,10 +101,11 @@ class DashboardPage extends StatelessWidget {
                 context,
                 icon: Icons.view_list_outlined,
                 title: 'Total Barang yang Ada',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => TotalBarangPage()),
-                ),
+                onTap:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => TotalBarangPage()),
+                    ),
               ),
             ],
           ),
@@ -129,13 +139,13 @@ class DashboardPage extends StatelessWidget {
   }) {
     return Card(
       elevation: 8, // Efek bayangan
-      color: Colors.black.withOpacity(0.8), // Warna kartu semi transparan
+      color: Colors.black.withAlpha(204), // Warna kartu semi transparan
       margin: const EdgeInsets.symmetric(vertical: 10), // Jarak antar kartu
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         leading: CircleAvatar(
-          backgroundColor: neonGreen.withOpacity(0.1), // Warna latar ikon
+          backgroundColor: neonGreen.withAlpha(25), // Warna latar ikon
           child: Icon(icon, color: neonGreen), // Ikon menu
         ),
         title: Text(

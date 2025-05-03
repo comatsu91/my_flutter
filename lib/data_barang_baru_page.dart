@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 import 'providers/barang_provider.dart';
 
 class DataBarangBaruPage extends StatefulWidget {
+  const DataBarangBaruPage({super.key});
   @override
-  _DataBarangBaruPageState createState() => _DataBarangBaruPageState();
+  DataBarangBaruPageState createState() => DataBarangBaruPageState();
 }
 
-class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
+class DataBarangBaruPageState extends State<DataBarangBaruPage> {
   List<Map<String, TextEditingController>> barangControllers = [];
   int totalJumlah = 0;
 
@@ -30,19 +31,19 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
         primaryColor = neonGreen;
         backgroundColor = Colors.black;
         textColor = Colors.white;
-        cardColor = Colors.black.withOpacity(0.8);
+        cardColor = Colors.black.withAlpha(204);
         borderColor = neonGreen;
       } else if (theme == 'dark') {
         primaryColor = Colors.blueGrey;
         backgroundColor = Colors.grey[900]!;
         textColor = Colors.white;
-        cardColor = Colors.grey[800]!.withOpacity(0.8);
+        cardColor = Colors.grey[800]!.withAlpha(204);
         borderColor = Colors.white70;
       } else {
         primaryColor = Colors.blue;
         backgroundColor = Colors.white;
         textColor = Colors.black;
-        cardColor = Colors.grey[100]!.withOpacity(0.8);
+        cardColor = Colors.grey[100]!.withAlpha(204);
         borderColor = Colors.black54;
       }
     });
@@ -92,48 +93,54 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
     });
   }
 
-void _saveData() {
-  bool isValid = true;
-  String message = '';
-  for (int i = 0; i < barangControllers.length; i++) {
-    var row = barangControllers[i];
-    for (var entry in row.entries) {
-      if (entry.value.text.isEmpty) {
+  void _saveData() {
+    bool isValid = true;
+    String message = '';
+    for (int i = 0; i < barangControllers.length; i++) {
+      var row = barangControllers[i];
+      for (var entry in row.entries) {
+        if (entry.value.text.isEmpty) {
+          isValid = false;
+          message = 'Semua kolom harus diisi (Baris ${i + 1})';
+          break;
+        }
+      }
+      if (isValid && int.tryParse(row['jumlah']!.text) == null) {
         isValid = false;
-        message = 'Semua kolom harus diisi (Baris ${i + 1})';
+        message = 'Jumlah harus berupa angka (Baris ${i + 1})';
         break;
       }
     }
-    if (isValid && int.tryParse(row['jumlah']!.text) == null) {
-      isValid = false;
-      message = 'Jumlah harus berupa angka (Baris ${i + 1})';
-      break;
+
+    if (isValid) {
+      _calculateTotalJumlah();
+      List<Map<String, String>> data =
+          barangControllers
+              .map(
+                (controller) => {
+                  'no': controller['no']!.text,
+                  'nama': controller['nama']!.text,
+                  'jumlah': controller['jumlah']!.text,
+                  'kondisi': controller['kondisi']!.text,
+                  'keterangan': controller['keterangan']!.text,
+                },
+              )
+              .toList();
+
+      Provider.of<BarangProvider>(
+        context,
+        listen: false,
+      ).updateBarangBaru(totalJumlah, data);
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Data berhasil disimpan!')));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
-
-  if (isValid) {
-    _calculateTotalJumlah();
-    List<Map<String, String>> data = barangControllers.map((controller) => {
-      'no': controller['no']!.text,
-      'nama': controller['nama']!.text,
-      'jumlah': controller['jumlah']!.text,
-      'kondisi': controller['kondisi']!.text,
-      'keterangan': controller['keterangan']!.text,
-    }).toList();
-
-    Provider.of<BarangProvider>(context, listen: false)
-        .updateBarangBaru(totalJumlah, data);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Data berhasil disimpan!')),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-}
-
 
   TableRow _buildTableHeader() {
     return TableRow(
@@ -218,7 +225,7 @@ void _saveData() {
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: [
         _buildTableHeader(),
-        ...barangControllers.map((row) => _buildTableRow(row)).toList(),
+        ...barangControllers.map((row) => _buildTableRow(row)),
       ],
     );
   }

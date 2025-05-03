@@ -9,20 +9,21 @@ class ProfilePage extends StatefulWidget {
   final String username;
   final String password;
 
-  ProfilePage({
+  const ProfilePage({
     required this.nama,
     required this.jabatan,
     required this.jurusan,
     required this.email,
     required this.username,
     required this.password,
+    super.key,
   });
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  ProfilePageState createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class ProfilePageState extends State<ProfilePage> {
   // Warna untuk tema neon
   final Color neonGreen = const Color(0xFF39FF14);
   final Color neonPink = const Color(0xFFFF10F0);
@@ -30,10 +31,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Variabel untuk tema saat ini
   String currentTheme = 'neon'; // Bisa: 'neon', 'dark', atau 'light'
-  Color primaryColor = const Color(0xFF39FF14); // Warna utama (default neon green)
+  Color primaryColor = const Color(
+    0xFF39FF14,
+  ); // Warna utama (default neon green)
   Color backgroundColor = Colors.black; // Warna latar belakang
   Color textColor = Colors.white; // Warna teks
-  Color cardColor = Colors.black.withOpacity(0.8); // Warna kartu profil
+  Color cardColor = Colors.black.withAlpha(204); // Warna kartu profil
 
   // Fungsi untuk mengganti tema
   void changeTheme(String theme) {
@@ -43,17 +46,17 @@ class _ProfilePageState extends State<ProfilePage> {
         primaryColor = neonGreen;
         backgroundColor = Colors.black;
         textColor = Colors.white;
-        cardColor = Colors.black.withOpacity(0.8);
+        cardColor = Colors.black.withAlpha(204);
       } else if (theme == 'dark') {
         primaryColor = Colors.blueGrey;
         backgroundColor = Colors.grey[900]!;
         textColor = Colors.white;
-        cardColor = Colors.grey[800]!.withOpacity(0.8);
+        cardColor = Colors.grey[800]!.withAlpha(204);
       } else if (theme == 'light') {
         primaryColor = Colors.blue;
         backgroundColor = Colors.white;
         textColor = Colors.black;
-        cardColor = Colors.grey[100]!.withOpacity(0.8);
+        cardColor = Colors.grey[100]!.withAlpha(204);
       }
     });
   }
@@ -84,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 boxShadow: [
                   // Efek bayangan untuk kartu profil
                   BoxShadow(
-                    color: primaryColor.withOpacity(0.3),
+                    color: primaryColor.withAlpha(76),
                     blurRadius: 15,
                     spreadRadius: 2,
                     offset: Offset(0, 5),
@@ -106,16 +109,17 @@ class _ProfilePageState extends State<ProfilePage> {
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
                               color: primaryColor,
-                              shadows: currentTheme == 'neon'
-                                  ? [
-                                      // Efek cahaya untuk tema neon
-                                      Shadow(
-                                        blurRadius: 10,
-                                        color: primaryColor,
-                                        offset: Offset(0, 0),
-                                      ),
-                                    ]
-                                  : null,
+                              shadows:
+                                  currentTheme == 'neon'
+                                      ? [
+                                        // Efek cahaya untuk tema neon
+                                        Shadow(
+                                          blurRadius: 10,
+                                          color: primaryColor,
+                                          offset: Offset(0, 0),
+                                        ),
+                                      ]
+                                      : null,
                             ),
                           ),
                         ),
@@ -152,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   _buildProfileItem('Email', widget.email),
 
                   // Pemisah antara data utama dan data akun
-                  Divider(color: primaryColor.withOpacity(0.5), height: 30),
+                  Divider(color: primaryColor.withAlpha(127), height: 30),
 
                   // Menampilkan data tambahan
                   _buildProfileItemSmall('Username', widget.username),
@@ -178,13 +182,13 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         children: [
-          Container(
+          SizedBox(
             width: 120, // Label kiri
             child: Text(
               label,
               style: TextStyle(
                 fontSize: 18,
-                color: primaryColor.withOpacity(0.8),
+                color: primaryColor.withAlpha(204),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -206,13 +210,13 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
-          Container(
+          SizedBox(
             width: 120, // Label kiri
             child: Text(
               label,
               style: TextStyle(
                 fontSize: 14,
-                color: primaryColor.withOpacity(0.6),
+                color: primaryColor.withAlpha(153),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -220,10 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Expanded(
             child: Text(
               value,
-              style: TextStyle(
-                fontSize: 14,
-                color: textColor.withOpacity(0.8),
-              ),
+              style: TextStyle(fontSize: 14, color: textColor.withAlpha(204)),
             ),
           ),
         ],

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'providers/barang_provider.dart';
 
 class TotalBarangPage extends StatelessWidget {
+  const TotalBarangPage({super.key});
   @override
   Widget build(BuildContext context) {
     final barangProvider = Provider.of<BarangProvider>(context);
@@ -51,22 +52,19 @@ class TotalBarangPage extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    neonBlue.withOpacity(0.2),
-                    neonGreen.withOpacity(0.2),
-                  ],
+                  colors: [neonBlue.withAlpha(51), neonGreen.withAlpha(51)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: neonGreen.withOpacity(0.5), width: 1),
+                border: Border.all(color: neonGreen.withAlpha(127), width: 1),
               ),
               child: Column(
                 children: [
                   Text(
                     'TOTAL SEMUA BARANG',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withAlpha(204),
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -79,10 +77,7 @@ class TotalBarangPage extends StatelessWidget {
                       fontSize: 35,
                       fontWeight: FontWeight.bold,
                       shadows: [
-                        Shadow(
-                          color: neonGreen.withOpacity(0.5),
-                          blurRadius: 10,
-                        ),
+                        Shadow(color: neonGreen.withAlpha(127), blurRadius: 10),
                       ],
                     ),
                   ),
@@ -135,12 +130,12 @@ class TotalBarangPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withAlpha(76),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withAlpha(76), width: 1),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.1),
+            color: color.withAlpha(25),
             blurRadius: 10,
             spreadRadius: 2,
           ),
@@ -151,9 +146,9 @@ class TotalBarangPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withAlpha(25),
               shape: BoxShape.circle,
-              border: Border.all(color: color.withOpacity(0.5), width: 1),
+              border: Border.all(color: color.withAlpha(127), width: 1),
             ),
             child: Icon(icon, color: color, size: 24),
           ),
@@ -165,7 +160,7 @@ class TotalBarangPage extends StatelessWidget {
                 Text(
                   title.toUpperCase(),
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withAlpha(178),
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
