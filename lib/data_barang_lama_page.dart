@@ -67,17 +67,15 @@ class DataBarangLamaPageState extends State<DataBarangLamaPage> {
     });
   }
 
-  void _removeRow() {
-    if (barangControllers.isNotEmpty) {
-      setState(() {
-        barangControllers.removeLast();
-      });
+  void _removeRow(int index) {
+    setState(() {
+      // Dispose semua controller sebelum menghapus
+      barangControllers[index].values.forEach(
+        (controller) => controller.dispose(),
+      );
+      barangControllers.removeAt(index);
       _calculateTotalJumlah();
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Tidak ada baris untuk dihapus.')));
-    }
+    });
   }
 
   void _calculateTotalJumlah() {
@@ -151,11 +149,12 @@ class DataBarangLamaPageState extends State<DataBarangLamaPage> {
         _buildHeaderCell('Jumlah'),
         _buildHeaderCell('Kondisi'),
         _buildHeaderCell('Keterangan'),
+        _buildHeaderCell(''),
       ],
     );
   }
 
-  TableRow _buildTableRow(Map<String, TextEditingController> row) {
+  TableRow _buildTableRow(Map<String, TextEditingController> row, int index) {
     return TableRow(
       children: [
         _buildTableInput(row['no']!),
@@ -163,6 +162,7 @@ class DataBarangLamaPageState extends State<DataBarangLamaPage> {
         _buildTableInput(row['jumlah']!),
         _buildTableInput(row['kondisi']!),
         _buildTableInput(row['keterangan']!),
+        _buildDeleteButton(index),
       ],
     );
   }
@@ -196,6 +196,16 @@ class DataBarangLamaPageState extends State<DataBarangLamaPage> {
     );
   }
 
+  Widget _buildDeleteButton(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: IconButton(
+        icon: Icon(Icons.delete, color: neonGreen),
+        onPressed: () => _removeRow(index),
+      ),
+    );
+  }
+
   Widget _buildTotalRow() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
@@ -222,11 +232,14 @@ class DataBarangLamaPageState extends State<DataBarangLamaPage> {
         2: FlexColumnWidth(2),
         3: FlexColumnWidth(2),
         4: FlexColumnWidth(3),
+        5: FlexColumnWidth(1),
       },
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: [
         _buildTableHeader(),
-        ...barangControllers.map((row) => _buildTableRow(row)),
+        ...barangControllers.asMap().entries.map(
+          (entry) => _buildTableRow(entry.value, entry.key),
+        ),
       ],
     );
   }
@@ -281,15 +294,6 @@ class DataBarangLamaPageState extends State<DataBarangLamaPage> {
                 ),
                 onPressed: _addRow,
                 child: Text('Tambah'),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: backgroundColor,
-                  foregroundColor: primaryColor,
-                  side: BorderSide(color: primaryColor),
-                ),
-                onPressed: _removeRow,
-                child: Text('Hapus'),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(

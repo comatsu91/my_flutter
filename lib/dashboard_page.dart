@@ -8,10 +8,10 @@ import 'total_barang_page.dart'; // Halaman Total Barang
 class DashboardPage extends StatelessWidget {
   final String username; // Menerima username dari login
   final String password; // Menerima password dari login
-  final String nama;     // Nama dari hasil register/login
-  final String jabatan;  // Jabatan pengguna
-  final String jurusan;  // Jurusan pengguna
-  final String email;    // Email pengguna
+  final String nama; // Nama dari hasil register/login
+  final String jabatan; // Jabatan pengguna
+  final String jurusan; // Jurusan pengguna
+  final String email; // Email pengguna
 
   const DashboardPage({
     super.key,
@@ -57,7 +57,7 @@ class DashboardPage extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             children: [
               Text(
-                'Selamat datang di Dashboard!',
+                'Daftar Inventaris',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -72,19 +72,21 @@ class DashboardPage extends StatelessWidget {
                 context,
                 icon: Icons.person_outline,
                 title: 'Profile',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ProfilePage(
-                      nama: nama,
-                      jabatan: jabatan,
-                      jurusan: jurusan,
-                      email: email,
-                      username: username,
-                      password: password,
+                onTap:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => ProfilePage(
+                              nama: nama,
+                              jabatan: jabatan,
+                              jurusan: jurusan,
+                              email: email,
+                              username: username,
+                              password: password,
+                            ),
+                      ),
                     ),
-                  ),
-                ),
               ),
 
               // Menu ke halaman Data Barang Baru
@@ -92,10 +94,11 @@ class DashboardPage extends StatelessWidget {
                 context,
                 icon: Icons.add_circle_outline,
                 title: 'Data Barang Baru',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => DataBarangBaruPage()),
-                ),
+                onTap:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => DataBarangBaruPage()),
+                    ),
               ),
 
               // Menu ke halaman Data Barang Lama
@@ -103,10 +106,11 @@ class DashboardPage extends StatelessWidget {
                 context,
                 icon: Icons.archive_outlined,
                 title: 'Data Barang Lama',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => DataBarangLamaPage()),
-                ),
+                onTap:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => DataBarangLamaPage()),
+                    ),
               ),
 
               // Menu ke halaman Total Barang
@@ -114,10 +118,11 @@ class DashboardPage extends StatelessWidget {
                 context,
                 icon: Icons.view_list_outlined,
                 title: 'Total Barang yang Ada',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => TotalBarangPage()),
-                ),
+                onTap:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => TotalBarangPage()),
+                    ),
               ),
             ],
           ),
@@ -139,7 +144,10 @@ class DashboardPage extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 12,
+        ),
         leading: CircleAvatar(
           backgroundColor: neonGreen.withAlpha(25),
           child: Icon(icon, color: neonGreen),

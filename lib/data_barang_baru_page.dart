@@ -68,18 +68,6 @@ class DataBarangBaruPageState extends State<DataBarangBaruPage> {
     });
   }
 
-  void _removeRow() {
-    if (barangControllers.isNotEmpty) {
-      setState(() {
-        barangControllers.removeLast();
-      });
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Tidak ada baris untuk dihapus.')));
-    }
-  }
-
   void _calculateTotalJumlah() {
     int total = 0;
     for (var row in barangControllers) {
@@ -151,11 +139,13 @@ class DataBarangBaruPageState extends State<DataBarangBaruPage> {
         _buildHeaderCell('Jumlah'),
         _buildHeaderCell('Kondisi'),
         _buildHeaderCell('Keterangan'),
+        _buildHeaderCell(''), // header kosong untuk tombol hapus
       ],
     );
   }
 
   TableRow _buildTableRow(Map<String, TextEditingController> row) {
+    int index = barangControllers.indexOf(row);
     return TableRow(
       children: [
         _buildTableInput(row['no']!),
@@ -163,6 +153,7 @@ class DataBarangBaruPageState extends State<DataBarangBaruPage> {
         _buildTableInput(row['jumlah']!),
         _buildTableInput(row['kondisi']!),
         _buildTableInput(row['keterangan']!),
+        _buildDeleteButton(index),
       ],
     );
   }
@@ -195,6 +186,17 @@ class DataBarangBaruPageState extends State<DataBarangBaruPage> {
     );
   }
 
+  Widget _buildDeleteButton(int index) {
+    return IconButton(
+      icon: Icon(Icons.delete, color: neonGreen),
+      onPressed: () {
+        setState(() {
+          barangControllers.removeAt(index);
+        });
+      },
+    );
+  }
+
   Widget _buildTotalRow() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
@@ -221,6 +223,7 @@ class DataBarangBaruPageState extends State<DataBarangBaruPage> {
         2: FlexColumnWidth(2),
         3: FlexColumnWidth(2),
         4: FlexColumnWidth(3),
+        5: FlexColumnWidth(1), // kolom untuk tombol hapus
       },
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: [
@@ -273,15 +276,6 @@ class DataBarangBaruPageState extends State<DataBarangBaruPage> {
                 ),
                 onPressed: _addRow,
                 child: Text('Tambah'),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: backgroundColor,
-                  foregroundColor: primaryColor,
-                  side: BorderSide(color: primaryColor),
-                ),
-                onPressed: _removeRow,
-                child: Text('Hapus'),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(

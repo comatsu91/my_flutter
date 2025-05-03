@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
   // Callback untuk mengirim data lengkap ke halaman lain (misalnya LoginPage)
-  final Function(String username, String password, String nama, String email, String jabatan, String jurusan) onRegister;
+  final Function(
+    String username,
+    String password,
+    String nama,
+    String email,
+    String jabatan,
+    String jurusan,
+  )
+  onRegister;
 
   const RegisterPage({required this.onRegister, super.key});
 
@@ -20,6 +28,7 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   final Color neonGreen = const Color(0xFF39FF14); // Warna hijau neon
+  bool _isPasswordHidden = true; // Variabel untuk menyimpan status password
 
   // Fungsi untuk memproses pendaftaran akun
   void _register() {
@@ -30,14 +39,19 @@ class RegisterPageState extends State<RegisterPage> {
     String jabatan = _jabatanController.text;
     String jurusan = _jurusanController.text;
 
-    if (nama.isNotEmpty && jabatan.isNotEmpty && jurusan.isNotEmpty && email.isNotEmpty && username.isNotEmpty && password.isNotEmpty) {
+    if (nama.isNotEmpty &&
+        jabatan.isNotEmpty &&
+        jurusan.isNotEmpty &&
+        email.isNotEmpty &&
+        username.isNotEmpty &&
+        password.isNotEmpty) {
       // Kirim data lengkap ke halaman lain
       widget.onRegister(username, password, nama, email, jabatan, jurusan);
       Navigator.pop(context); // Kembali ke halaman login
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Semua field harus diisi!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Semua field harus diisi!')));
     }
   }
 
@@ -47,6 +61,7 @@ class RegisterPageState extends State<RegisterPage> {
     required IconData icon,
     required TextEditingController controller,
     bool obscure = false,
+    Widget? suffixIcon,
   }) {
     return TextField(
       controller: controller,
@@ -56,6 +71,7 @@ class RegisterPageState extends State<RegisterPage> {
         labelText: label,
         labelStyle: TextStyle(color: neonGreen),
         prefixIcon: Icon(icon, color: neonGreen),
+        suffixIcon: suffixIcon,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: neonGreen),
           borderRadius: BorderRadius.circular(8),
@@ -139,12 +155,26 @@ class RegisterPageState extends State<RegisterPage> {
                     controller: _usernameController,
                   ),
                   const SizedBox(height: 16),
-                  // Input password
+                  // Input password dengan fitur hide/show
                   buildTextField(
                     label: 'Password',
                     icon: Icons.lock,
                     controller: _passwordController,
-                    obscure: true,
+                    obscure: _isPasswordHidden,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordHidden
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: neonGreen,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordHidden =
+                              !_isPasswordHidden; // Toggle hide/show
+                        });
+                      },
+                    ),
                   ),
                   const SizedBox(height: 24),
                   // Tombol daftar
