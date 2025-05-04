@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:my_first_app/splash_screan.dart';
 import 'package:provider/provider.dart';
 
-import 'login_page.dart'; // Halaman Login
+// import 'login_page.dart'; // Halaman Login
 import 'providers/barang_provider.dart'; // Provider untuk state total barang
 
-void main() {
+import 'package:get/get.dart'; // Penambahan Get
+import 'package:get_storage/get_storage.dart'; // penambahan storage
+
+void main() async {
+  await GetStorage.init(); // menjalankan get_storage
   // Menjalankan aplikasi Flutter dengan state management menggunakan Provider
   runApp(
     ChangeNotifierProvider(
@@ -20,7 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Aplikasi Inventaris',
       debugShowCheckedModeBanner: false, // Menghilangkan banner debug
       theme: ThemeData(
@@ -39,7 +44,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginPage(), // Halaman awal: LoginPage
+      home: const SplashScrean(), // Halaman awal: LoginPage
     );
   }
 }

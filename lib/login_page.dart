@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'register_page.dart';
 import 'dashboard_page.dart';
 import 'models/user_data.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -47,22 +49,20 @@ class LoginPageState extends State<LoginPage> {
   void _login() {
     String username = _usernameController.text;
     String password = _passwordController.text;
+    final box = GetStorage();
+    box.write('username', username);
 
     if (registeredUser != null &&
         username == registeredUser!.username &&
         password == registeredUser!.password) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder:
-              (context) => DashboardPage(
-                username: registeredUser!.username,
-                password: registeredUser!.password,
-                nama: registeredUser!.nama,
-                jabatan: registeredUser!.jabatan,
-                jurusan: registeredUser!.jurusan,
-                email: registeredUser!.email,
-              ),
+      Get.to(
+        () => DashboardPage(
+          username: registeredUser!.username,
+          password: registeredUser!.password,
+          nama: registeredUser!.nama,
+          jabatan: registeredUser!.jabatan,
+          jurusan: registeredUser!.jurusan,
+          email: registeredUser!.email,
         ),
       );
     } else {
@@ -74,12 +74,13 @@ class LoginPageState extends State<LoginPage> {
 
   // Navigasi ke halaman registrasi
   void _register() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RegisterPage(onRegister: _onRegister),
-      ),
-    );
+    Get.to(() => RegisterPage(onRegister: _onRegister));
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => RegisterPage(onRegister: _onRegister),
+    //   ),
+    // );
   }
 
   @override
@@ -169,7 +170,9 @@ class LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed: _login,
+                      onPressed: () {
+                        _login();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF39FF14),
                         minimumSize: const Size(double.infinity, 50),

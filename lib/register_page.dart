@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 
 class RegisterPage extends StatefulWidget {
   // Callback untuk mengirim data lengkap ke halaman lain (misalnya LoginPage)
@@ -32,6 +33,7 @@ class RegisterPageState extends State<RegisterPage> {
 
   // Fungsi untuk memproses pendaftaran akun
   void _register() {
+    final box = GetStorage();
     String username = _usernameController.text;
     String password = _passwordController.text;
     String nama = _nameController.text;
@@ -47,6 +49,13 @@ class RegisterPageState extends State<RegisterPage> {
         password.isNotEmpty) {
       // Kirim data lengkap ke halaman lain
       widget.onRegister(username, password, nama, email, jabatan, jurusan);
+      box.write('username', username);
+      box.write('password', password);
+      box.write('email', email);
+      box.write('jurusan', jurusan);
+      box.write('jabatan', jabatan);
+      box.write('nama', nama);
+
       Navigator.pop(context); // Kembali ke halaman login
     } else {
       ScaffoldMessenger.of(

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:my_first_app/login_page.dart';
 import 'profile_page.dart'; // Halaman profil
 import 'data_barang_baru_page.dart'; // Halaman Data Barang Baru
 import 'data_barang_lama_page.dart'; // Halaman Data Barang Lama
@@ -37,7 +40,16 @@ class DashboardPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              Navigator.pop(context); // Logout ke halaman sebelumnya
+              // Navigator.pop(context); // Logout ke halaman sebelumnya
+              final box = GetStorage();
+              box.remove('username');
+              box.remove('password');
+              box.remove('email');
+              box.remove('jurusan');
+              box.remove('jabatan');
+              box.remove('nama');
+
+              Get.offAll(LoginPage());
             },
           ),
         ],
