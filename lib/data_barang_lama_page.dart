@@ -68,15 +68,16 @@ class DataBarangLamaPageState extends State<DataBarangLamaPage> {
   }
 
   void _removeRow(int index) {
-    setState(() {
-      // Dispose semua controller sebelum menghapus
-      barangControllers[index].values.forEach(
-        (controller) => controller.dispose(),
-      );
-      barangControllers.removeAt(index);
-      _calculateTotalJumlah();
-    });
-  }
+  setState(() {
+    // Dispose semua controller sebelum menghapus
+    for (var controller in barangControllers[index].values) {
+      controller.dispose();
+    }
+    barangControllers.removeAt(index);
+    _calculateTotalJumlah();
+  });
+}
+
 
   void _calculateTotalJumlah() {
     int total = 0;
@@ -257,6 +258,7 @@ class DataBarangLamaPageState extends State<DataBarangLamaPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: backgroundColor,
         title: Text('Data Barang Lama', style: TextStyle(color: primaryColor)),
         iconTheme: IconThemeData(color: primaryColor),

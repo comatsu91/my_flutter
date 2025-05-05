@@ -164,6 +164,7 @@ class ProfilePageState extends State<ProfilePage> {
         ),
       ),
       appBar: AppBar(
+        automaticallyImplyLeading: false, // menghilangkan tombol back
         backgroundColor: backgroundColor,
         title: Text('Profile', style: TextStyle(color: primaryColor)),
         iconTheme: IconThemeData(color: primaryColor),

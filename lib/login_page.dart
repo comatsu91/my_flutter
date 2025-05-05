@@ -75,12 +75,6 @@ class LoginPageState extends State<LoginPage> {
   // Navigasi ke halaman registrasi
   void _register() {
     Get.to(() => RegisterPage(onRegister: _onRegister));
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => RegisterPage(onRegister: _onRegister),
-    //   ),
-    // );
   }
 
   @override
@@ -89,7 +83,7 @@ class LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.black, Color(0xFF39FF14)],
+            colors: [Color(0xFF2C3E50), Color(0xFF39FF14)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -117,71 +111,48 @@ class LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    TextField(
+                    _buildTextField(
                       controller: _usernameController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        labelText: 'Username',
-                        labelStyle: TextStyle(color: Color(0xFF39FF14)),
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: Color(0xFF39FF14),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF39FF14)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF39FF14)),
-                        ),
-                      ),
+                      label: 'Username',
+                      icon: Icons.person,
+                      obscureText: false,
                     ),
                     const SizedBox(height: 16),
-                    TextField(
+                    _buildTextField(
                       controller: _passwordController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(color: Color(0xFF39FF14)),
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                          color: Color(0xFF39FF14),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: const Color(0xFF39FF14),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF39FF14)),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF39FF14)),
-                        ),
-                      ),
+                      label: 'Password',
+                      icon: Icons.lock,
                       obscureText: !_isPasswordVisible,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: const Color(0xFF39FF14),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed: () {
-                        _login();
-                      },
+                      onPressed: _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF39FF14),
                         minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                       child: const Text(
                         'Login',
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
+                    const SizedBox(height: 12),
                     TextButton(
                       onPressed: _register,
                       child: const Text(
@@ -194,6 +165,33 @@ class LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  // Widget untuk membangun textfield secara modular
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    required bool obscureText,
+    Widget? suffixIcon,
+  }) {
+    return TextField(
+      controller: controller,
+      style: const TextStyle(color: Colors.white),
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Color(0xFF39FF14)),
+        prefixIcon: Icon(icon, color: Color(0xFF39FF14)),
+        suffixIcon: suffixIcon,
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF39FF14)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF39FF14)),
         ),
       ),
     );

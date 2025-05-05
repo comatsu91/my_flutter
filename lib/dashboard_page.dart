@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:my_first_app/login_page.dart';
-import 'profile_page.dart'; // Halaman profil
-import 'data_barang_baru_page.dart'; // Halaman Data Barang Baru
-import 'data_barang_lama_page.dart'; // Halaman Data Barang Lama
-import 'total_barang_page.dart'; // Halaman Total Barang
+import 'profile_page.dart';
+import 'data_barang_baru_page.dart';
+import 'data_barang_lama_page.dart';
+import 'total_barang_page.dart';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
-// Halaman Dashboard utama
-class DashboardPage extends StatelessWidget {
-  final String username; // Menerima username dari login
-  final String password; // Menerima password dari login
-  final String nama; // Nama dari hasil register/login
-  final String jabatan; // Jabatan pengguna
-  final String jurusan; // Jurusan pengguna
-  final String email; // Email pengguna
+// ==========================
+// DashboardPage (Main Menu)
+// ==========================
+class DashboardPage extends StatefulWidget {
+  final String username;
+  final String password;
+  final String nama;
+  final String jabatan;
+  final String jurusan;
+  final String email;
 
   const DashboardPage({
     super.key,
@@ -26,154 +29,110 @@ class DashboardPage extends StatelessWidget {
     required this.email,
   });
 
-  final Color neonGreen = const Color(0xFF39FF14); // Warna hijau neon
-  final Color darkBackground = Colors.black; // Warna latar hitam
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
 
+class _DashboardPageState extends State<DashboardPage> {
+  // === THEME COLORS ===
+  final Color neonGreen = const Color(0xFF39FF14);
+  final Color neonBlue = const Color(0xFF00FFFF);
+  final Color darkBackground = Colors.black;
+
+  // === PAGE & NAVIGATION ===
+  late final PageController _pageController;
+  int _selectedIndex = 0;
+
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _selectedIndex);
+    _pages = [
+      ProfilePage(
+        nama: widget.nama,
+        jabatan: widget.jabatan,
+        jurusan: widget.jurusan,
+        email: widget.email,
+        username: widget.username,
+        password: widget.password,
+      ),
+      const DataBarangBaruPage(),
+      const DataBarangLamaPage(),
+      const TotalBarangPage(),
+    ];
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  // === ICON COLOR LOGIC ===
+  Color _getIconColor(int index) {
+    return _selectedIndex == index
+        ? (index.isEven ? neonGreen : neonBlue)
+        : Colors.white70;
+  }
+
+  // === ICON TAP ACTION ===
+  void _onItemTapped(int index) {
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  // === MAIN UI BUILD ===
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: darkBackground,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: darkBackground,
         title: Text('Dashboard', style: TextStyle(color: neonGreen)),
         iconTheme: IconThemeData(color: neonGreen),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.logout, color: neonBlue),
             onPressed: () {
-              // Navigator.pop(context); // Logout ke halaman sebelumnya
               final box = GetStorage();
-              box.remove('username');
-              box.remove('password');
-              box.remove('email');
-              box.remove('jurusan');
-              box.remove('jabatan');
-              box.remove('nama');
-
-              Get.offAll(LoginPage());
+              box.erase(); // Hapus semua data tersimpan
+              Get.offAll(const LoginPage());
             },
           ),
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [darkBackground, neonGreen],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Text(
-                'Daftar Inventaris',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: neonGreen,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-
-              // Menu ke halaman profil
-              _buildMenuCard(
-                context,
-                icon: Icons.person_outline,
-                title: 'Profile',
-                onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (_) => ProfilePage(
-                              nama: nama,
-                              jabatan: jabatan,
-                              jurusan: jurusan,
-                              email: email,
-                              username: username,
-                              password: password,
-                            ),
-                      ),
-                    ),
-              ),
-
-              // Menu ke halaman Data Barang Baru
-              _buildMenuCard(
-                context,
-                icon: Icons.add_circle_outline,
-                title: 'Data Barang Baru',
-                onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => DataBarangBaruPage()),
-                    ),
-              ),
-
-              // Menu ke halaman Data Barang Lama
-              _buildMenuCard(
-                context,
-                icon: Icons.archive_outlined,
-                title: 'Data Barang Lama',
-                onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => DataBarangLamaPage()),
-                    ),
-              ),
-
-              // Menu ke halaman Total Barang
-              _buildMenuCard(
-                context,
-                icon: Icons.view_list_outlined,
-                title: 'Total Barang yang Ada',
-                onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => TotalBarangPage()),
-                    ),
-              ),
-            ],
-          ),
-        ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() => _selectedIndex = index);
+        },
+        children: _pages,
       ),
-    );
-  }
-
-  // Widget pembentuk menu di dashboard
-  Widget _buildMenuCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      elevation: 8,
-      color: Colors.black.withAlpha(204),
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 12,
-        ),
-        leading: CircleAvatar(
-          backgroundColor: neonGreen.withAlpha(25),
-          child: Icon(icon, color: neonGreen),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: neonGreen,
-          ),
-        ),
-        trailing: Icon(Icons.arrow_forward_ios, color: neonGreen, size: 16),
-        onTap: onTap,
+      bottomNavigationBar: AnimatedBottomNavigationBar.builder(
+        itemCount: _pages.length,
+        activeIndex: _selectedIndex,
+        gapLocation: GapLocation.center,
+        backgroundColor: darkBackground,
+        tabBuilder: (int index, bool isActive) {
+          final iconList = [
+            Icons.person_outline,
+            Icons.add_circle_outline,
+            Icons.archive_outlined,
+            Icons.view_list_outlined,
+          ];
+          return Icon(
+            iconList[index],
+            color: _getIconColor(index),
+            size: isActive ? 30 : 24,
+          );
+        },
+        onTap: _onItemTapped,
       ),
     );
   }

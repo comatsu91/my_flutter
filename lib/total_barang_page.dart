@@ -15,12 +15,13 @@ class TotalBarangPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: darkBackground,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Total Barang',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 24,
+            fontSize: 20,
           ),
         ),
         centerTitle: true,
@@ -39,7 +40,7 @@ class TotalBarangPage extends StatelessWidget {
               color: neonGreen,
               icon: Icons.new_releases_outlined,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             _buildStatCard(
               context,
               title: 'Barang Lama',
@@ -47,7 +48,7 @@ class TotalBarangPage extends StatelessWidget {
               color: neonBlue,
               icon: Icons.history_outlined,
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -65,7 +66,7 @@ class TotalBarangPage extends StatelessWidget {
                     'TOTAL SEMUA BARANG',
                     style: TextStyle(
                       color: Colors.white.withAlpha(204),
-                      fontSize: 16,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -84,7 +85,7 @@ class TotalBarangPage extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(

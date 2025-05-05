@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:my_first_app/splash_screan.dart';
+// import 'package:my_first_app/splash_page.dart';
 import 'package:provider/provider.dart';
+import 'providers/barang_provider.dart';
 
-// import 'login_page.dart'; // Halaman Login
-import 'providers/barang_provider.dart'; // Provider untuk state total barang
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-import 'package:get/get.dart'; // Penambahan Get
-import 'package:get_storage/get_storage.dart'; // penambahan storage
+// import 'dashboard_page.dart';
+// import 'login_page.dart';
+import 'session_handler_page.dart';
 
 void main() async {
-  await GetStorage.init(); // menjalankan get_storage
-  // Menjalankan aplikasi Flutter dengan state management menggunakan Provider
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init(); // Inisialisasi GetStorage
+
   runApp(
     ChangeNotifierProvider(
-      create: (context) => BarangProvider(), // Inisialisasi state provider
-      child: const MyApp(), // Widget utama aplikasi
+      create: (context) => BarangProvider(),
+      child: const MyApp(),
     ),
   );
 }
 
-// Widget utama aplikasi
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -27,13 +29,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Aplikasi Inventaris',
-      debugShowCheckedModeBanner: false, // Menghilangkan banner debug
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.green, // Tema utama aplikasi: hijau
-        scaffoldBackgroundColor: Colors.black, // Warna latar belakang umum
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(color: Colors.white), // Default warna teks
-        ),
+        primarySwatch: Colors.green,
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
         inputDecorationTheme: const InputDecorationTheme(
           labelStyle: TextStyle(color: Color(0xFF39FF14)),
           enabledBorder: OutlineInputBorder(
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashScrean(), // Halaman awal: LoginPage
+      home: const SessionHandlerPage(), // Ganti SplashScrean dengan handler
     );
   }
 }
