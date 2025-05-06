@@ -4,6 +4,7 @@ import 'providers/barang_provider.dart';
 
 class TotalBarangPage extends StatelessWidget {
   const TotalBarangPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final barangProvider = Provider.of<BarangProvider>(context);
@@ -33,20 +34,29 @@ class TotalBarangPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildStatCard(
-              context,
-              title: 'Barang Baru',
-              value: barangProvider.totalBarangBaru,
-              color: neonGreen,
-              icon: Icons.new_releases_outlined,
-            ),
-            const SizedBox(height: 10),
-            _buildStatCard(
-              context,
-              title: 'Barang Lama',
-              value: barangProvider.totalBarangLama,
-              color: neonBlue,
-              icon: Icons.history_outlined,
+            // Dua kartu statistik
+            Row(
+              children: [
+                Expanded(
+                  child: _buildStatCard(
+                    context,
+                    title: 'Barang Baru',
+                    value: barangProvider.totalBarangBaru,
+                    color: neonGreen,
+                    icon: Icons.new_releases_outlined,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _buildStatCard(
+                    context,
+                    title: 'Barang Lama',
+                    value: barangProvider.totalBarangLama,
+                    color: neonBlue,
+                    icon: Icons.history_outlined,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
             Container(
@@ -99,7 +109,12 @@ class TotalBarangPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    _buildDataTable(barangProvider.dataBarangBaru, neonGreen),
+                    _buildDataTable(
+                      context,
+                      barangProvider.dataBarangBaru,
+                      neonGreen,
+                      true,
+                    ),
                     const SizedBox(height: 30),
                     Text(
                       'TABEL BARANG LAMA',
@@ -110,7 +125,12 @@ class TotalBarangPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    _buildDataTable(barangProvider.dataBarangLama, neonBlue),
+                    _buildDataTable(
+                      context,
+                      barangProvider.dataBarangLama,
+                      neonBlue,
+                      false,
+                    ),
                   ],
                 ),
               ),
@@ -183,7 +203,12 @@ class TotalBarangPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDataTable(List<Map<String, String>> dataList, Color textColor) {
+  Widget _buildDataTable(
+    BuildContext context,
+    List<Map<String, String>> dataList,
+    Color textColor,
+    bool isBarangBaru,
+  ) {
     return Table(
       border: TableBorder.all(color: textColor),
       columnWidths: const {
@@ -192,6 +217,7 @@ class TotalBarangPage extends StatelessWidget {
         2: FlexColumnWidth(2),
         3: FlexColumnWidth(2),
         4: FlexColumnWidth(3),
+        5: FlexColumnWidth(1),
       },
       children: [
         TableRow(
@@ -202,20 +228,152 @@ class TotalBarangPage extends StatelessWidget {
             _buildCell('Jumlah', textColor),
             _buildCell('Kondisi', textColor),
             _buildCell('Keterangan', textColor),
+            _buildCell('Edit', textColor),
           ],
         ),
-        ...dataList.map(
-          (item) => TableRow(
+        ...dataList.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return TableRow(
             children: [
               _buildCell(item['no'] ?? '', textColor),
               _buildCell(item['nama'] ?? '', textColor),
               _buildCell(item['jumlah'] ?? '', textColor),
               _buildCell(item['kondisi'] ?? '', textColor),
               _buildCell(item['keterangan'] ?? '', textColor),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: IconButton(
+                  icon: Icon(Icons.edit, size: 18, color: textColor),
+                  onPressed:
+                      () => _showEditDialog(context, item, index, isBarangBaru),
+                ),
+              ),
+            ],
+          );
+        }),
+      ],
+    );
+  }
+
+  void _showEditDialog(
+    BuildContext context,
+    Map<String, String> item,
+    int index,
+    bool isBarangBaru,
+  ) {
+    final barangProvider = Provider.of<BarangProvider>(context, listen: false);
+
+    final namaController = TextEditingController(text: item['nama']);
+    final jumlahController = TextEditingController(text: item['jumlah']);
+    final kondisiController = TextEditingController(text: item['kondisi']);
+    final keteranganController = TextEditingController(
+      text: item['keterangan'],
+    );
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Colors.grey[900],
+            title: Text(
+              'Edit Barang',
+              style: TextStyle(
+                color: Colors.lightBlueAccent,
+              ), // Neon blue for title
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: namaController,
+                    decoration: InputDecoration(
+                      labelText: 'Nama Barang',
+                      labelStyle: TextStyle(
+                        color: Colors.lightBlueAccent,
+                      ), // Neon blue label
+                    ),
+                    style: TextStyle(
+                      color: Colors.lightBlueAccent,
+                    ), // Neon blue text
+                  ),
+                  TextField(
+                    controller: jumlahController,
+                    decoration: InputDecoration(
+                      labelText: 'Jumlah',
+                      labelStyle: TextStyle(
+                        color: Colors.lightBlueAccent,
+                      ), // Neon blue label
+                    ),
+                    style: TextStyle(
+                      color: Colors.lightBlueAccent,
+                    ), // Neon blue text
+                    keyboardType: TextInputType.number,
+                  ),
+                  TextField(
+                    controller: kondisiController,
+                    decoration: InputDecoration(
+                      labelText: 'Kondisi',
+                      labelStyle: TextStyle(
+                        color: Colors.lightBlueAccent,
+                      ), // Neon blue label
+                    ),
+                    style: TextStyle(
+                      color: Colors.lightBlueAccent,
+                    ), // Neon blue text
+                  ),
+                  TextField(
+                    controller: keteranganController,
+                    decoration: InputDecoration(
+                      labelText: 'Keterangan',
+                      labelStyle: TextStyle(
+                        color: Colors.lightBlueAccent,
+                      ), // Neon blue label
+                    ),
+                    style: TextStyle(
+                      color: const Color.fromARGB(255, 68, 221, 255),
+                    ), // Neon blue text
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Batal',
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 27, 240, 3),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final updatedItem = {
+                    'no': item['no'] ?? '',
+                    'nama': namaController.text,
+                    'jumlah': jumlahController.text,
+                    'kondisi': kondisiController.text,
+                    'keterangan': keteranganController.text,
+                  };
+
+                  if (isBarangBaru) {
+                    barangProvider.dataBarangBaru[index] = updatedItem;
+                  } else {
+                    barangProvider.dataBarangLama[index] = updatedItem;
+                  }
+
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Simpan',
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 5, 215, 238),
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-      ],
     );
   }
 

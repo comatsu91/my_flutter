@@ -12,41 +12,98 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final box = GetStorage();
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      final box = GetStorage();
-      String username = box.read('username') ?? '';
-      String password = box.read('password') ?? '';
-      String email = box.read('email') ?? '';
-      String jurusan = box.read('jurusan') ?? '';
-      String jabatan = box.read('jabatan') ?? '';
-      String nama = box.read('nama') ?? '';
+    navigateAfterDelay();
+  }
 
-      if (username.isNotEmpty) {
-        Get.off(() => DashboardPage(
-              username: username,
-              password: password,
-              email: email,
-              jurusan: jurusan,
-              jabatan: jabatan,
-              nama: nama,
-            ));
-      } else {
-        Get.off(() => const LoginPage());
-      }
-    });
+  void navigateAfterDelay() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    final userData = {
+      'username': box.read('username') ?? '',
+      'password': box.read('password') ?? '',
+      'email': box.read('email') ?? '',
+      'jurusan': box.read('jurusan') ?? '',
+      'jabatan': box.read('jabatan') ?? '',
+      'nama': box.read('nama') ?? '',
+    };
+
+    if (userData['username']!.isNotEmpty) {
+      Get.off(
+        () => DashboardPage(
+          username: userData['username']!,
+          password: userData['password']!,
+          email: userData['email']!,
+          jurusan: userData['jurusan']!,
+          jabatan: userData['jabatan']!,
+          nama: userData['nama']!,
+        ),
+      );
+    } else {
+      Get.off(() => const LoginPage());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text(
-          'SMK S SAKTI Gemolong',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final imageSize = screenWidth * 0.8;
+
+    return Scaffold(
+      body: Column(
+        children: [
+          // Teks di bagian paling atas
+          SizedBox(height: 50), // Mengganti Container dengan SizedBox
+          Center(
+            child: Text(
+              'SMK S SAKTI Gemolong',
+              style: TextStyle(
+                fontSize: screenWidth * 0.06,
+                fontWeight: FontWeight.bold,
+                color: Colors.greenAccent[400],
+                shadows: [
+                  Shadow(
+                    blurRadius: 10.0,
+                    color: Colors.greenAccent,
+                    offset: const Offset(2.0, 2.0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Konten utama di tengah
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      // Menggunakan SizedBox untuk container gambar
+                      width: imageSize,
+                      height: imageSize,
+                      child: Image.asset(
+                        'assets/smks.png',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.school,
+                            size: imageSize * 0.6,
+                            color: Colors.blue,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
