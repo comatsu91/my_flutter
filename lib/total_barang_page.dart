@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'providers/barang_provider.dart';
+import 'theme_controller.dart';
 
 class TotalBarangPage extends StatelessWidget {
   const TotalBarangPage({super.key});
@@ -8,19 +10,16 @@ class TotalBarangPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final barangProvider = Provider.of<BarangProvider>(context);
-
-    const neonGreen = Color(0xFF39FF14);
-    const neonBlue = Color(0xFF00E5FF);
-    const darkBackground = Color(0xFF121212);
+    final themeController = Get.find<ThemeController>();
 
     return Scaffold(
-      backgroundColor: darkBackground,
+      backgroundColor: themeController.backgroundColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
           'Total Barang',
           style: TextStyle(
-            color: Colors.white,
+            color: themeController.textColor,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
@@ -28,7 +27,7 @@ class TotalBarangPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: neonBlue),
+        iconTheme: IconThemeData(color: themeController.primaryColor),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -42,8 +41,9 @@ class TotalBarangPage extends StatelessWidget {
                     context,
                     title: 'Barang Baru',
                     value: barangProvider.totalBarangBaru,
-                    color: neonGreen,
+                    color: themeController.primaryColor,
                     icon: Icons.new_releases_outlined,
+                    themeController: themeController,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -52,8 +52,9 @@ class TotalBarangPage extends StatelessWidget {
                     context,
                     title: 'Barang Lama',
                     value: barangProvider.totalBarangLama,
-                    color: neonBlue,
+                    color: themeController.neonBlue,
                     icon: Icons.history_outlined,
+                    themeController: themeController,
                   ),
                 ),
               ],
@@ -63,19 +64,25 @@ class TotalBarangPage extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [neonBlue.withAlpha(51), neonGreen.withAlpha(51)],
+                  colors: [
+                    themeController.neonBlue.withAlpha(51),
+                    themeController.primaryColor.withAlpha(51),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: neonGreen.withAlpha(127), width: 1),
+                border: Border.all(
+                  color: themeController.primaryColor.withAlpha(127),
+                  width: 1,
+                ),
               ),
               child: Column(
                 children: [
                   Text(
                     'TOTAL SEMUA BARANG',
                     style: TextStyle(
-                      color: Colors.white.withAlpha(204),
+                      color: themeController.textColor.withAlpha(204),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -84,11 +91,14 @@ class TotalBarangPage extends StatelessWidget {
                   Text(
                     '${barangProvider.totalSemuaBarang}',
                     style: TextStyle(
-                      color: neonGreen,
+                      color: themeController.primaryColor,
                       fontSize: 35,
                       fontWeight: FontWeight.bold,
                       shadows: [
-                        Shadow(color: neonGreen.withAlpha(127), blurRadius: 10),
+                        Shadow(
+                          color: themeController.primaryColor.withAlpha(127),
+                          blurRadius: 10,
+                        ),
                       ],
                     ),
                   ),
@@ -103,7 +113,7 @@ class TotalBarangPage extends StatelessWidget {
                     Text(
                       'TABEL BARANG BARU',
                       style: TextStyle(
-                        color: neonGreen,
+                        color: themeController.primaryColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
@@ -112,14 +122,15 @@ class TotalBarangPage extends StatelessWidget {
                     _buildDataTable(
                       context,
                       barangProvider.dataBarangBaru,
-                      neonGreen,
+                      themeController.primaryColor,
                       true,
+                      themeController,
                     ),
                     const SizedBox(height: 30),
                     Text(
                       'TABEL BARANG LAMA',
                       style: TextStyle(
-                        color: neonBlue,
+                        color: themeController.neonBlue,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
@@ -128,8 +139,9 @@ class TotalBarangPage extends StatelessWidget {
                     _buildDataTable(
                       context,
                       barangProvider.dataBarangLama,
-                      neonBlue,
+                      themeController.neonBlue,
                       false,
+                      themeController,
                     ),
                   ],
                 ),
@@ -147,11 +159,12 @@ class TotalBarangPage extends StatelessWidget {
     required int value,
     required Color color,
     required IconData icon,
+    required ThemeController themeController,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withAlpha(76),
+        color: themeController.cardColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withAlpha(76), width: 1),
         boxShadow: [
@@ -181,7 +194,7 @@ class TotalBarangPage extends StatelessWidget {
                 Text(
                   title.toUpperCase(),
                   style: TextStyle(
-                    color: Colors.white.withAlpha(178),
+                    color: themeController.textColor.withAlpha(178),
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -208,6 +221,7 @@ class TotalBarangPage extends StatelessWidget {
     List<Map<String, String>> dataList,
     Color textColor,
     bool isBarangBaru,
+    ThemeController themeController,
   ) {
     return Table(
       border: TableBorder.all(color: textColor),
@@ -221,14 +235,14 @@ class TotalBarangPage extends StatelessWidget {
       },
       children: [
         TableRow(
-          decoration: BoxDecoration(color: Colors.black45),
+          decoration: BoxDecoration(color: themeController.cardColor),
           children: [
             _buildCell('No.', textColor),
             _buildCell('Nama Barang', textColor),
             _buildCell('Jumlah', textColor),
             _buildCell('Kondisi', textColor),
             _buildCell('Keterangan', textColor),
-            _buildCell('Edit', textColor),
+            _buildCell('', textColor),
           ],
         ),
         ...dataList.asMap().entries.map((entry) {
@@ -246,7 +260,13 @@ class TotalBarangPage extends StatelessWidget {
                 child: IconButton(
                   icon: Icon(Icons.edit, size: 18, color: textColor),
                   onPressed:
-                      () => _showEditDialog(context, item, index, isBarangBaru),
+                      () => _showEditDialog(
+                        context,
+                        item,
+                        index,
+                        isBarangBaru,
+                        themeController,
+                      ),
                 ),
               ),
             ],
@@ -261,6 +281,7 @@ class TotalBarangPage extends StatelessWidget {
     Map<String, String> item,
     int index,
     bool isBarangBaru,
+    ThemeController themeController,
   ) {
     final barangProvider = Provider.of<BarangProvider>(context, listen: false);
 
@@ -275,64 +296,54 @@ class TotalBarangPage extends StatelessWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            backgroundColor: Colors.grey[900],
+            backgroundColor: themeController.cardColor,
             title: Text(
               'Edit Barang',
-              style: TextStyle(
-                color: Colors.lightBlueAccent,
-              ), // Neon blue for title
+              style: TextStyle(color: themeController.primaryColor),
             ),
             content: SingleChildScrollView(
               child: Column(
                 children: [
                   TextField(
                     controller: namaController,
+                    style: TextStyle(color: themeController.textColor),
                     decoration: InputDecoration(
                       labelText: 'Nama Barang',
                       labelStyle: TextStyle(
-                        color: Colors.lightBlueAccent,
-                      ), // Neon blue label
+                        color: themeController.primaryColor,
+                      ),
                     ),
-                    style: TextStyle(
-                      color: Colors.lightBlueAccent,
-                    ), // Neon blue text
                   ),
                   TextField(
                     controller: jumlahController,
+                    style: TextStyle(color: themeController.textColor),
                     decoration: InputDecoration(
                       labelText: 'Jumlah',
                       labelStyle: TextStyle(
-                        color: Colors.lightBlueAccent,
-                      ), // Neon blue label
+                        color: themeController.primaryColor,
+                      ),
                     ),
-                    style: TextStyle(
-                      color: Colors.lightBlueAccent,
-                    ), // Neon blue text
                     keyboardType: TextInputType.number,
                   ),
                   TextField(
                     controller: kondisiController,
+                    style: TextStyle(color: themeController.textColor),
                     decoration: InputDecoration(
                       labelText: 'Kondisi',
                       labelStyle: TextStyle(
-                        color: Colors.lightBlueAccent,
-                      ), // Neon blue label
+                        color: themeController.primaryColor,
+                      ),
                     ),
-                    style: TextStyle(
-                      color: Colors.lightBlueAccent,
-                    ), // Neon blue text
                   ),
                   TextField(
                     controller: keteranganController,
+                    style: TextStyle(color: themeController.textColor),
                     decoration: InputDecoration(
                       labelText: 'Keterangan',
                       labelStyle: TextStyle(
-                        color: Colors.lightBlueAccent,
-                      ), // Neon blue label
+                        color: themeController.primaryColor,
+                      ),
                     ),
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 68, 221, 255),
-                    ), // Neon blue text
                   ),
                 ],
               ),
@@ -342,12 +353,13 @@ class TotalBarangPage extends StatelessWidget {
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   'Batal',
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 27, 240, 3),
-                  ),
+                  style: TextStyle(color: themeController.primaryColor),
                 ),
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: themeController.primaryColor,
+                ),
                 onPressed: () {
                   final updatedItem = {
                     'no': item['no'] ?? '',
@@ -358,18 +370,16 @@ class TotalBarangPage extends StatelessWidget {
                   };
 
                   if (isBarangBaru) {
-                    barangProvider.dataBarangBaru[index] = updatedItem;
+                    barangProvider.updateItemBarangBaru(index, updatedItem);
                   } else {
-                    barangProvider.dataBarangLama[index] = updatedItem;
+                    barangProvider.updateItemBarangLama(index, updatedItem);
                   }
 
                   Navigator.pop(context);
                 },
                 child: Text(
                   'Simpan',
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 5, 215, 238),
-                  ),
+                  style: TextStyle(color: themeController.backgroundColor),
                 ),
               ),
             ],

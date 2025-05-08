@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-// import 'package:my_first_app/splash_page.dart';
 import 'package:provider/provider.dart';
 import 'providers/barang_provider.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-// import 'dashboard_page.dart';
-// import 'login_page.dart';
 import 'session_handler_page.dart';
+import 'package:my_first_app/theme_controller.dart'; // <--- Tambahkan ini
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init(); // Inisialisasi GetStorage
+  await GetStorage.init();
+
+  // Inisialisasi ThemeController global
+  Get.put(ThemeController());
 
   runApp(
     ChangeNotifierProvider(
@@ -27,24 +28,41 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Aplikasi Inventaris',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        scaffoldBackgroundColor: Colors.black,
-        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
-        inputDecorationTheme: const InputDecorationTheme(
-          labelStyle: TextStyle(color: Color(0xFF39FF14)),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF39FF14)),
+    final themeController = Get.find<ThemeController>();
+
+    return Obx(() {
+      return GetMaterialApp(
+        title: 'Aplikasi Inventaris',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: _getPrimarySwatch(themeController.currentTheme.value),
+          scaffoldBackgroundColor: themeController.backgroundColor,
+          textTheme: TextTheme(
+            bodyMedium: TextStyle(color: themeController.textColor),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF39FF14)),
+          inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(color: themeController.primaryColor),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: themeController.primaryColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: themeController.primaryColor),
+            ),
           ),
         ),
-      ),
-      home: const SessionHandlerPage(), // Ganti SplashScrean dengan handler
-    );
+        home: const SessionHandlerPage(),
+      );
+    });
+  }
+
+  MaterialColor _getPrimarySwatch(String theme) {
+    switch (theme) {
+      case 'dark':
+        return Colors.blueGrey;
+      case 'light':
+        return Colors.blue;
+      default:
+        return Colors.green; // neon
+    }
   }
 }

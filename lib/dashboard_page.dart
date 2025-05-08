@@ -8,9 +8,6 @@ import 'data_barang_lama_page.dart';
 import 'total_barang_page.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
-// ==========================
-// DashboardPage (Main Menu)
-// ==========================
 class DashboardPage extends StatefulWidget {
   final String username;
   final String password;
@@ -34,16 +31,16 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  // === THEME COLORS ===
   final Color neonGreen = const Color(0xFF39FF14);
   final Color neonBlue = const Color(0xFF00FFFF);
   final Color darkBackground = Colors.black;
 
-  // === PAGE & NAVIGATION ===
   late final PageController _pageController;
   int _selectedIndex = 0;
 
   late final List<Widget> _pages;
+
+  bool showNavbar = false; // Variabel untuk kontrol visibilitas navbar
 
   @override
   void initState() {
@@ -70,14 +67,12 @@ class _DashboardPageState extends State<DashboardPage> {
     super.dispose();
   }
 
-  // === ICON COLOR LOGIC ===
   Color _getIconColor(int index) {
     return _selectedIndex == index
         ? (index.isEven ? neonGreen : neonBlue)
         : Colors.white70;
   }
 
-  // === ICON TAP ACTION ===
   void _onItemTapped(int index) {
     _pageController.animateToPage(
       index,
@@ -86,7 +81,6 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // === MAIN UI BUILD ===
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,14 +88,14 @@ class _DashboardPageState extends State<DashboardPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: darkBackground,
-        title: Text('Dashboard', style: TextStyle(color: neonGreen)),
+        title: Text('Dashboard', style: TextStyle(color: neonBlue)),
         iconTheme: IconThemeData(color: neonGreen),
         actions: [
           IconButton(
             icon: Icon(Icons.logout, color: neonBlue),
             onPressed: () {
               final box = GetStorage();
-              box.erase(); // Hapus semua data tersimpan
+              box.erase();
               Get.offAll(const LoginPage());
             },
           ),
@@ -114,26 +108,44 @@ class _DashboardPageState extends State<DashboardPage> {
         },
         children: _pages,
       ),
-      bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-        itemCount: _pages.length,
-        activeIndex: _selectedIndex,
-        gapLocation: GapLocation.center,
-        backgroundColor: darkBackground,
-        tabBuilder: (int index, bool isActive) {
-          final iconList = [
-            Icons.person_outline,
-            Icons.add_circle_outline,
-            Icons.archive_outlined,
-            Icons.view_list_outlined,
-          ];
-          return Icon(
-            iconList[index],
-            color: _getIconColor(index),
-            size: isActive ? 30 : 24,
-          );
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: neonBlue, // Warna hijau neon
+        shape: const CircleBorder(), // Menambahkan shape lingkaran
+        child: const Icon(Icons.school_outlined, color: Colors.black),
+        onPressed: () {
+          setState(() {
+            showNavbar = !showNavbar; // Toggle navbar visibility
+          });
+          // ScaffoldMessenger.of(
+          //   context,
+          // ).showSnackBar(const SnackBar(content: Text('Ikon sekolah ditekan')));
         },
-        onTap: _onItemTapped,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar:
+          showNavbar // Menampilkan navbar jika showNavbar true
+              ? AnimatedBottomNavigationBar.builder(
+                itemCount: _pages.length,
+                activeIndex: _selectedIndex,
+                gapLocation: GapLocation.center,
+                notchSmoothness: NotchSmoothness.softEdge,
+                backgroundColor: darkBackground,
+                tabBuilder: (int index, bool isActive) {
+                  final iconList = [
+                    Icons.person_outline,
+                    Icons.add_circle_outline,
+                    Icons.archive_outlined,
+                    Icons.view_list_outlined,
+                  ];
+                  return Icon(
+                    iconList[index],
+                    color: _getIconColor(index),
+                    size: isActive ? 30 : 24,
+                  );
+                },
+                onTap: _onItemTapped,
+              )
+              : null, // Navbar akan hilang jika showNavbar false
     );
   }
 }

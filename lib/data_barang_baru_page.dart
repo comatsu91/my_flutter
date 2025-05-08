@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'providers/barang_provider.dart';
+import 'theme_controller.dart'; // Import ThemeController
 
 class DataBarangBaruPage extends StatefulWidget {
   const DataBarangBaruPage({super.key});
@@ -13,51 +15,10 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
   final List<Map<String, TextEditingController>> barangControllers = [];
   int totalJumlah = 0;
 
-  // === NEON & THEME COLORS ===
-  final Color neonGreen = const Color(0xFF39FF14);
-  final Color neonBlue = const Color(0xFF00E5FF);
-
-  String currentTheme = 'neon';
-  late Color primaryColor;
-  late Color backgroundColor;
-  late Color textColor;
-  late Color cardColor;
-  late Color borderColor;
-
   @override
   void initState() {
     super.initState();
     _addRow();
-    _setTheme('neon');
-  }
-
-  // === SET TEMA BERDASARKAN PILIHAN ===
-  void _setTheme(String theme) {
-    setState(() {
-      currentTheme = theme;
-      switch (theme) {
-        case 'dark':
-          primaryColor = Colors.blueGrey;
-          backgroundColor = Colors.grey[900]!;
-          textColor = Colors.white;
-          cardColor = Colors.grey[800]!.withAlpha(204);
-          borderColor = Colors.white70;
-          break;
-        case 'light':
-          primaryColor = Colors.blue;
-          backgroundColor = Colors.white;
-          textColor = Colors.black;
-          cardColor = Colors.grey[100]!.withAlpha(204);
-          borderColor = Colors.black54;
-          break;
-        default: // neon
-          primaryColor = neonGreen;
-          backgroundColor = Colors.black;
-          textColor = Colors.white;
-          cardColor = Colors.black.withAlpha(204);
-          borderColor = neonGreen;
-      }
-    });
   }
 
   void _addRow() {
@@ -135,56 +96,66 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
     }
   }
 
-  // === UI TABEL ===
-  TableRow _buildTableHeader() {
+  // Header Tabel
+  TableRow _buildTableHeader(ThemeController themeController) {
     return TableRow(
-      decoration: BoxDecoration(color: backgroundColor),
+      decoration: BoxDecoration(color: themeController.backgroundColor),
       children: [
-        _buildHeaderCell('No.'),
-        _buildHeaderCell('Nama Barang'),
-        _buildHeaderCell('Jumlah'),
-        _buildHeaderCell('Kondisi'),
-        _buildHeaderCell('Keterangan'),
-        _buildHeaderCell(''),
+        _buildHeaderCell('No.', themeController),
+        _buildHeaderCell('Nama Barang', themeController),
+        _buildHeaderCell('Jumlah', themeController),
+        _buildHeaderCell('Kondisi', themeController),
+        _buildHeaderCell('Keterangan', themeController),
+        _buildHeaderCell('', themeController),
       ],
     );
   }
 
-  TableRow _buildTableRow(Map<String, TextEditingController> row) {
+  // Baris Tabel Input
+  TableRow _buildTableRow(
+    Map<String, TextEditingController> row,
+    ThemeController themeController,
+  ) {
     int index = barangControllers.indexOf(row);
     return TableRow(
       children: [
-        _buildTableInput(row['no']!),
-        _buildTableInput(row['nama']!),
-        _buildTableInput(row['jumlah']!),
-        _buildTableInput(row['kondisi']!),
-        _buildTableInput(row['keterangan']!),
-        _buildDeleteButton(index),
+        _buildTableInput(row['no']!, themeController),
+        _buildTableInput(row['nama']!, themeController),
+        _buildTableInput(row['jumlah']!, themeController),
+        _buildTableInput(row['kondisi']!, themeController),
+        _buildTableInput(row['keterangan']!, themeController),
+        _buildDeleteButton(index, themeController),
       ],
     );
   }
 
-  Widget _buildHeaderCell(String label) {
+  Widget _buildHeaderCell(String label, ThemeController themeController) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
         child: Text(
           label,
-          style: TextStyle(fontWeight: FontWeight.bold, color: primaryColor),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: themeController.primaryColor,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildTableInput(TextEditingController controller) {
+  Widget _buildTableInput(
+    TextEditingController controller,
+    ThemeController themeController,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: TextField(
         controller: controller,
-        style: TextStyle(color: textColor),
+        style: TextStyle(color: themeController.textColor),
         decoration: InputDecoration(
           filled: true,
-          fillColor: cardColor,
+          fillColor: themeController.cardColor,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 8.0,
@@ -195,16 +166,16 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
     );
   }
 
-  Widget _buildDeleteButton(int index) {
+  Widget _buildDeleteButton(int index, ThemeController themeController) {
     return IconButton(
-      icon: Icon(Icons.delete, color: neonGreen),
+      icon: Icon(Icons.delete, color: themeController.primaryColor),
       onPressed: () {
         setState(() => barangControllers.removeAt(index));
       },
     );
   }
 
-  Widget _buildTotalRow() {
+  Widget _buildTotalRow(ThemeController themeController) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
       child: Align(
@@ -214,16 +185,16 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            color: primaryColor,
+            color: themeController.primaryColor,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTable() {
+  Widget _buildTable(ThemeController themeController) {
     return Table(
-      border: TableBorder.all(color: borderColor),
+      border: TableBorder.all(color: themeController.primaryColor),
       columnWidths: const {
         0: FlexColumnWidth(1),
         1: FlexColumnWidth(3),
@@ -234,37 +205,27 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
       },
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: [
-        _buildTableHeader(),
-        ...barangControllers.map((row) => _buildTableRow(row)),
+        _buildTableHeader(themeController),
+        ...barangControllers.map((row) => _buildTableRow(row, themeController)),
       ],
     );
   }
 
-  // === UI BUILD ===
   @override
   Widget build(BuildContext context) {
+    // Mendapatkan instance ThemeController menggunakan GetX
+    final ThemeController themeController = Get.find<ThemeController>();
+
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: themeController.backgroundColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: backgroundColor,
-        title: Text('Data Barang Baru', style: TextStyle(color: primaryColor)),
-        iconTheme: IconThemeData(color: primaryColor),
-        actions: [
-          PopupMenuButton<String>(
-            icon: Icon(Icons.palette, color: primaryColor),
-            onSelected: _setTheme,
-            itemBuilder:
-                (_) => [
-                  const PopupMenuItem(value: 'neon', child: Text('Neon Theme')),
-                  const PopupMenuItem(value: 'dark', child: Text('Dark Theme')),
-                  const PopupMenuItem(
-                    value: 'light',
-                    child: Text('Light Theme'),
-                  ),
-                ],
-          ),
-        ],
+        backgroundColor: themeController.backgroundColor,
+        title: Text(
+          'Data Barang Baru',
+          style: TextStyle(color: themeController.primaryColor),
+        ),
+        iconTheme: IconThemeData(color: themeController.primaryColor),
       ),
       body: Column(
         children: [
@@ -272,26 +233,26 @@ class _DataBarangBaruPageState extends State<DataBarangBaruPage> {
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: _buildTable(),
+              child: _buildTable(themeController),
             ),
           ),
-          _buildTotalRow(),
+          _buildTotalRow(themeController),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: primaryColor,
-                  side: BorderSide(color: primaryColor),
+                  foregroundColor: themeController.primaryColor,
+                  side: BorderSide(color: themeController.primaryColor),
                 ),
                 onPressed: _addRow,
                 child: const Text('Tambah'),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  foregroundColor: backgroundColor,
+                  backgroundColor: themeController.primaryColor,
+                  foregroundColor: themeController.backgroundColor,
                 ),
                 onPressed: _saveData,
                 child: const Text('Simpan'),
